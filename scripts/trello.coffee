@@ -3,9 +3,9 @@
 
 module.exports = (robot) ->
   robot.router.post '/trelloCallbacks/:room', (req, res) ->
-    data   = JSON.parse req.body.payload
-    room = req.params.room
+    data   = req.body
+    room   = req.params.room
 
-    robot.messageRoom room, "Trello Callback Received"
+    robot.messageRoom room, "Trello Callback Received: #{ JSON.stringify data }"
 
     res.send 'OK'
