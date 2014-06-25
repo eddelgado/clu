@@ -2,7 +2,7 @@
 #   Webhooks for Trello
 
 module.exports = (robot) ->
-  robot.router.post '/hubot/trelloCallbacks/:room', (req, res) ->
+  robot.router.post '/trelloCallbacks/:room', (req, res) ->
     data   = JSON.parse req.body.payload
     room = req.params.room
 
