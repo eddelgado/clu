@@ -53,5 +53,5 @@ module.exports = (robot) ->
         id = body.rmId
         phoneExtension = body.rmExtension
         city = body.rmCity
-        state = body.cmState
+        state = body.rmState
         msg.reply "You're looking for #{firstname} #{lastname} (#{id}) of #{city}, #{state}. Their extension is #{phoneExtension}."
