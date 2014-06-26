@@ -9,6 +9,8 @@
 # Examples:
 #   cm 12345
 
+inspect = require('util').inspect
+
 module.exports = (robot) ->
-  robot.hear /cm (\d+)/i, (msg) ->
-    msg.respond JSON.stringify(msg)
+  robot.hear /\bcm (\d+)\b/i, (msg) ->
+    msg.send inspect(msg)
