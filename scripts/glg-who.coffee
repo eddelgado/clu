@@ -43,6 +43,7 @@ module.exports = (robot) ->
       .query('Email', email)
       .auth(user, pass)
       .get() (err, resp, body) ->
+        return if err
         response = JSON.parse body
         if !response.length
           msg.reply '''Hmm, couldn't find anyone with that email address.'''
