@@ -50,8 +50,17 @@ module.exports = (robot) ->
         body = response[0]
         firstname = body.rmFirstName
         lastname = body.rmLastName
-        id = body.rmId
+        id = body.personId
         phoneExtension = body.rmExtension
         city = body.rmCity
         state = body.rmState
-        msg.reply "You're looking for #{firstname} #{lastname} (#{id}) of #{city}, #{state}. Their extension is #{phoneExtension}."
+        reply = []
+        url = "https://query.glgroup.com/person/getUserByEmail.mustache?Email=#{email}"
+        reply.push "You're looking for <a href=\"#{url}\">#{firstname} #{lastname} (#{id})</a>"
+        if city and state
+          reply.push " of #{city}, #{state}"
+        if phoneExtension
+          reply.push ". Their extension is #{phoneExtension}"
+        reply.push '.'
+        msg.reply reply.join ''
+        # msg.reply "You're looking for #{firstname} #{lastname} (#{id}) of #{city}, #{state}. Their extension is #{phoneExtension}."
