@@ -12,5 +12,7 @@
 inspect = require('util').inspect
 
 module.exports = (robot) ->
-  robot.hear /\bcm (\d+)\b/i, (msg) ->
-    msg.send inspect(msg)
+  robot.hear /\bcm[:|#|\s]?(\d+)\b/i, (msg) ->
+    id = msg.match[1]
+    return if not id
+    msg.send "https://advisors.glgroup.com/cm/#{id}"
