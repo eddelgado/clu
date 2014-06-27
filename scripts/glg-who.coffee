@@ -4,7 +4,7 @@
 #   Set the environment variables as they should appear in basic auth.
 #
 # Commands:
-#   hubot whois <user email> - return user info
+#   whois <user email> - return user info
 #
 # Configuration:
 #   EPIQUERY_HOST
@@ -12,8 +12,8 @@
 #   EPIQUERY_PASS
 #
 # Examples:
-#   hubot whois drhayes
-#   hubot whois drhayes@glgroup.com
+#   whois drhayes
+#   whois drhayes@glgroup.com
 
 module.exports = (robot) ->
 
@@ -33,7 +33,7 @@ module.exports = (robot) ->
   user = process.env.EPIQUERY_USER
   pass = process.env.EPIQUERY_PASS
 
-  robot.respond /whois ([\w .\-]+)\?*$/i, (msg) ->
+  robot.hear /whois ([\w .\-]+)\?*$/i, (msg) ->
     email = msg.match[1]
     if email.indexOf('@') == -1
       email = "#{email}@glgroup.com"
