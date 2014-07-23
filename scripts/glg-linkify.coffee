@@ -44,6 +44,8 @@ module.exports = (robot) ->
     return if not type
     return if not id
 
+    type = type.toLowerCase()
+
     if type is 'cm'
       robot.http(host)
         .path('councilMember/getCouncilMemberByCmId.mustache')
