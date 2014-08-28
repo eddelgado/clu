@@ -38,7 +38,7 @@ module.exports = (robot) ->
   user = process.env.EPIQUERY_USER
   pass = process.env.EPIQUERY_PASS
 
-  robot.hear /\b((?:cm)|(?:project))[#|:|\s](\d+)\b/i, (msg) ->
+  robot.hear /\b((?:cm)|(?:project)|(?:client))[#|:|\s](\d+)\b/i, (msg) ->
     type = msg.match[1]
     id = msg.match[2]
     return if not type
@@ -55,8 +55,7 @@ module.exports = (robot) ->
           return if err
           response = JSON.parse body
           if !response.length
-            msg.send '''Hmm, not finding anyone with that CM ID.'''
-            return
+            return msg.send '''Hmm, not finding anyone with that CM ID.'''
           body = response[0]
           firstname = body.FIRST_NAME
           lastname = body.LAST_NAME
@@ -71,10 +70,24 @@ module.exports = (robot) ->
           return if err
           response = JSON.parse body
           if !response.length
-            msg.send '''Hmm, not finding any projects with that ID.'''
-            return
+            return msg.send '''Hmm, not finding any projects with that ID.'''
           body = response[0]
           title = body.CONSULTATION_TITLE
           rmfirst = body.FIRST_NAME
           rmlast = body.LAST_NAME
           msg.send "#{title} (#{rmfirst} #{rmlast}): https://vega.glgroup.com/Consult/mms/ManageConsultation.aspx?RID=#{id}"
+
+    else if type is 'client'
+      robot.http('https://compliance.glgroup.com/')
+        .path("/api/clientconfig/#{id}")
+        .auth(user, pass)
+        .get() (err, resp, body) ->
+          return if err
+          response = JSON.parse body
+          if !response
+            return msg.send 'Hmm, not finding any client with that ID.'
+          if response.errors
+            return msg.send "Uh oh, errors: #{response.errors}"
+          body = response[0]
+          name = response.client.name
+          msg.send "#{name}: https://compliance.glgroup.com/api/clientconfig/#{id}"
