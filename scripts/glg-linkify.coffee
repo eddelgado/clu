@@ -10,6 +10,12 @@
 #   project <id>
 #   project:<id>
 #   project#<id>
+#   client <id>
+#   client:<id>
+#   client#<id>
+#   person <id>
+#   person:<id>
+#   person#<id>
 #
 # Configuration:
 #   EPIQUERY_HOST
@@ -19,6 +25,8 @@
 # Examples:
 #   cm 12345
 #   project#345
+#   client:567
+#   person 789
 
 module.exports = (robot) ->
 
@@ -38,7 +46,7 @@ module.exports = (robot) ->
   user = process.env.EPIQUERY_USER
   pass = process.env.EPIQUERY_PASS
 
-  robot.hear /\b((?:cm)|(?:project)|(?:client))[#|:|\s](\d+)\b/i, (msg) ->
+  robot.hear /\b((?:cm)|(?:project)|(?:client)|(?:person))[#|:|\s](\d+)\b/i, (msg) ->
     type = msg.match[1]
     id = msg.match[2]
     return if not type
@@ -91,3 +99,19 @@ module.exports = (robot) ->
           body = response[0]
           name = response.client.name
           msg.send "#{name}: https://compliance.glgroup.com/api/clientconfig/#{id}"
+
+    else if type is 'person'
+      robot.http(host)
+        .path('person/getPersonByPersonID.mustache')
+        .query('PersonID', id)
+        .auth(user, pass)
+        .get() (err, resp, body) ->
+          return if err
+          response = JSON.parse body
+          if !response
+            return msg.send 'Hmm, not finding any person with that ID.'
+          if response.errors
+            return msg.send "Uh oh, errors: #{response.errors}"
+          body = response[0]
+          name = "#{body.FIRST_NAME} #{body.LAST_NAME}"
+          msg.send "Person #{id} is #{name}."
