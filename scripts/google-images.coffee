@@ -7,6 +7,10 @@
 #   hubot mustache me <url> - Adds a mustache to the specified URL.
 #   hubot mustache me <query> - Searches Google Images for the specified query and mustaches it.
 
+googleApiKey = process.env.GOOGLE_API_KEY || ''
+googleSearchEngineId = process.env.GOOGLE_SEARCH_ENGINE_ID || ''
+googleSafetyLevel = process.env.GOOGLE_SAFETY_LEVEL || 'medium'
+
 module.exports = (robot) ->
   robot.respond /(image|img)( me)? (.*)/i, (msg) ->
     imageMe msg, msg.match[3], (url) ->
@@ -33,12 +37,22 @@ imageMe = (msg, query, animated, faces, cb) ->
   q = v: '1.0', rsz: '8', q: query, safe: 'active'
   q.imgtype = 'animated' if typeof animated is 'boolean' and animated is true
   q.imgtype = 'face' if typeof faces is 'boolean' and faces is true
-  msg.http('http://ajax.googleapis.com/ajax/services/search/images')
-    .query(q)
+  #
+  msg.http('https://www.googleapis.com/customsearch/v1?cx=ID&key=KEY&q=QUERY&safe=medium')
+    .query(
+      cx: googleSearchEngineId
+      key: googleApiKey
+      q: query
+      safe: googleSafetyLevel
+      searchType: 'image'
+    )
     .get() (err, res, body) ->
-      images = JSON.parse(body)
-      images = images.responseData?.results
-      if images?.length > 0
-        image  = msg.random images
-        cb "#{image.unescapedUrl}#.png"
-
+      if err
+        cb "Oh no, an error: #{err}"
+      response = JSON.parse(body)
+      items = response.items
+      if items?.length > 0
+        image = msg.random items
+        cb "#{image.link}"
+      else
+        cb 'Hmm, no images. :('
