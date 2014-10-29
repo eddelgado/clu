@@ -67,7 +67,7 @@ module.exports = (robot) ->
           body = response[0]
           firstname = body.FIRST_NAME
           lastname = body.LAST_NAME
-          msg.send "#{firstname} #{lastname}: https://advisors.glgroup.com/cm/#{id}"
+          msg.send "#{firstname} #{lastname}: http://services.glgresearch.com/advisors/cm/#{id}"
 
     else if type is 'project'
       robot.http(host)
