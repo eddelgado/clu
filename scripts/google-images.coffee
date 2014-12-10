@@ -34,10 +34,10 @@ module.exports = (robot) ->
 imageMe = (msg, query, animated, faces, cb) ->
   cb = animated if typeof animated == 'function'
   cb = faces if typeof faces == 'function'
-  q = v: '1.0', rsz: '8', q: query, safe: 'active'
-  q.imgtype = 'animated' if typeof animated is 'boolean' and animated is true
-  q.imgtype = 'face' if typeof faces is 'boolean' and faces is true
-  msg.http('https://www.googleapis.com/customsearch/v1?cx=ID&key=KEY&q=QUERY&safe=medium')
+  # q = v: '1.0', rsz: '8', q: query, safe: 'active'
+  # q.imgtype = 'animated' if typeof animated is 'boolean' and animated is true
+  # q.imgtype = 'face' if typeof faces is 'boolean' and faces is true
+  msg.http('https://www.googleapis.com/customsearch/v1')
     .query(
       cx: googleSearchEngineId
       key: googleApiKey
@@ -47,10 +47,13 @@ imageMe = (msg, query, animated, faces, cb) ->
     )
     .get() (err, res, body) ->
       if err
-        cb "Oh no, an error: #{err}"
+        return cb "Oh no, an error: #{err}"
       response = JSON.parse(body)
       if response.error?
-        return cb "(doh) Image search error: #{response.error?.message} with code: #{response.error?.code}"
+        if response.error.message
+          return cb "(doh) Image search error! #{response.error.message}"
+        else
+          return cb "(doh) Image search error with no useful message and with code: #{response.error?.code}"
       items = response.items
       if items?.length > 0
         image = msg.random items
