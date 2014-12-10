@@ -50,6 +50,7 @@ imageMe = (msg, query, animated, faces, cb) ->
       if err
         cb "Oh no, an error: #{err}"
       response = JSON.parse(body)
+      console.log response
       items = response.items
       if items?.length > 0
         image = msg.random items
