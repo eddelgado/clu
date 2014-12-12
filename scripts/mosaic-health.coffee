@@ -41,6 +41,8 @@ module.exports = (robot) ->
     .query('wt', 'json')
     .auth(solrUser, solrPass)
 
+  # TODO: Use something like (I imagine) bluebird to clean this all up.
+  # TODO: Respond in room he's asked, publish cron report to Mosaic room.
   checkImport = ->
     say 'Checking in on the Mosaic import.'
     solrHttp.scope('people/dataimport')
