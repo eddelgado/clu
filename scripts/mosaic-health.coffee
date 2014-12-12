@@ -1,5 +1,10 @@
 # Description:
 #   Periodically check on Mosaic import's health.
+#
+# Commands:
+#   check mosaic
+#   check mosaic import <~~ same thing as "check mosaic"
+
 
 mosaicRoomId = process.env.MOSAIC_ROOM_ID
 mosaicImportCron = process.env.MOSAIC_IMPORT_CRON or '0 10 * * *'
