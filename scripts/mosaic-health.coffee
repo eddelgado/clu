@@ -46,40 +46,47 @@ module.exports = (robot) ->
       robot.logger.error "#{msg}: #{err}"
       null
 
-  # TODO: Use something like (I imagine) bluebird to clean this all up.
   # TODO: New Mosaic?
-  # TODO: Stats from a running import?
   checkImport = (say) ->
     say 'Checking in on the Mosaic import.'
-    checkImport = Promise.promisify(solrHttp.scope('people/dataimport').query('command', 'status').get(), solrHttp)
-    checkImport().then ([resp, body]) ->
+    getImports = Promise.promisify(solrHttp.scope('people/dataimport').query('command', 'status').get(), solrHttp)().then ([resp, body]) ->
       response = JSON.parse body
+      result =
+        status: response.status
       if response.status is 'busy'
-        say 'Import is running.'
-        response
-      else if response.status is 'idle'
-        say 'Looks like the Solr import is idle.'
-      else
-        say "Import is #{response.status}."
+        result.elapsed = response.statusMessages?['Time Elapsed']
+        result.processed = response.statusMessages?['Total Documents Processed']
+        result.skipped = response.statusMessages?['Total Documents Skipped']
+      result
     .catch(errorHandler('Error checking Mosaic import status'))
-    .then (response) ->
-      return if not response
-      say "Import has been running for #{response.statusMessages?['Time Elapsed']}."
-      processed = numeral(response.statusMessages?['Total Documents Processed']).format('0,0')
-      skipped = numeral(response.statusMessages?['Total Documents Skipped']).format('0,0')
-      say "Import has processed #{processed} records so far and skipped #{skipped}."
 
-    checkCores = Promise.promisify(solrHttp.scope('admin/cores').query('action', 'status').get(), solrHttp)
-    checkCores().then ([resp, body]) ->
+    getCores = Promise.promisify(solrHttp.scope('admin/cores').query('action', 'status').get(), solrHttp)().then ([resp, body]) ->
       response = JSON.parse body
-      numPeople = response?.status?.people?.index?.numDocs
-      numProjects = response?.status?.projects?.index?.numDocs
-      numProjectParticipants = response?.status?['project-participants']?.index?.numDocs
-      say 'Here are the stats:',
-        "People: #{numeral(numPeople).format('0,0')}",
-        "Projects: #{numeral(numProjects).format('0,0')}",
-        "Project participants: #{numeral(numProjectParticipants).format('0,0')}"
+      result =
+        people: response?.status?.people?.index?.numDocs
+        projects: response?.status?.projects?.index?.numDocs
+        projectParticipants: response?.status?['project-participants']?.index?.numDocs
     .catch(errorHandler('Error checking Mosaic core status'))
+
+    Promise.join getImports, getCores, (importResponse, coresResponse) ->
+      msgs = []
+      if importResponse.status is 'idle'
+        msgs.push 'The import is idle.'
+      else if importResponse.status is 'busy'
+        msgs.push 'The import is running right now.'
+        msgs.push "Import has been running for #{importResponse.elapsed}."
+        processed = numeral(importResponse.processed).format('0,0')
+        skipped = numeral(importResponse.skipped).format('0,0')
+        msgs.push "Import has processed #{processed} records so far and skipped #{skipped}."
+      else
+        msgs.push "The import is #{importResponse.status}"
+      if coresResponse
+        msgs.push 'Core stats:'
+        msgs.push "People: #{numeral(coresResponse.people).format('0,0')}"
+        msgs.push "Projects: #{numeral(coresResponse.projects).format('0,0')}"
+        msgs.push "Project participants: #{numeral(coresResponse.projectParticipants).format('0,0')}"
+      # Tell the world!
+      say.apply null, msgs
 
   robot.respond /check mosaic( import)?/i, (msg) ->
     checkImport(msg.send.bind(msg))
