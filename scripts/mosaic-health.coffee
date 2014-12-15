@@ -33,7 +33,7 @@ module.exports = (robot) ->
     robot.logger.warning 'The SOLR_PASS environment variable is not set'
     return
 
-  say = (msgs...) ->
+  sayMosaic = (msgs...) ->
     robot.messageRoom mosaicRoomId, msgs...
 
   # This stuff is the same no matter how often we go there, save it.
@@ -42,8 +42,7 @@ module.exports = (robot) ->
     .auth(solrUser, solrPass)
 
   # TODO: Use something like (I imagine) bluebird to clean this all up.
-  # TODO: Respond in room he's asked, publish cron report to Mosaic room.
-  checkImport = ->
+  checkImport = (say) ->
     say 'Checking in on the Mosaic import.'
     solrHttp.scope('people/dataimport')
       .query('command', 'status')
@@ -73,7 +72,7 @@ module.exports = (robot) ->
               "Project participants: #{numeral(numProjectParticipants).format('0,0')}"
 
   robot.respond /check mosaic( import)?/i, (msg) ->
-    msg.send 'Checking...'
-    checkImport()
+    checkImport(msg.send.bind(msg))
 
-  new CronJob mosaicImportCron, checkImport
+  new CronJob mosaicImportCron, ->
+    checkImport(sayMosaic)
