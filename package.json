@@ -29,10 +29,11 @@
     "request-json": "^0.4.10",
     "yelp": "^0.1.1",
     "cron": "^1.0.5",
-    "numeral": "^1.5.3"
+    "numeral": "^1.5.3",
+    "bluebird": "^2.3.11"
   },
   "engines": {
-    "node": ">= 0.8.x",
-    "npm": ">= 1.1.x"
+    "node": "0.10.x",
+    "npm": "1.4.x"
   }
 }
