@@ -10,6 +10,7 @@ Promise = require('bluebird')
 mosaicRoomId = process.env.MOSAIC_ROOM_ID
 mosaicImportCron = process.env.MOSAIC_IMPORT_CRON or '0 10 * * *'
 solrHost = process.env.SOLR_HOST
+solrNewHost = process.env.SOLR_NEW_HOST
 solrUser = process.env.SOLR_USER
 solrPass = process.env.SOLR_PASS
 
@@ -25,6 +26,10 @@ module.exports = (robot) ->
     robot.logger.warning 'The SOLR_HOST environment variable is not set'
     return
 
+  if not solrNewHost
+    robot.logger.warning 'The SOLR_NEW_HOST environment variable is not set'
+    return
+
   if not solrUser
     robot.logger.warning 'The SOLR_USER environment variable is not set'
     return
@@ -36,19 +41,19 @@ module.exports = (robot) ->
   sayMosaic = (msgs...) ->
     robot.messageRoom mosaicRoomId, msgs...
 
-  # This stuff is the same no matter how often we go there, save it.
-  solrHttp = robot.http(solrHost)
-    .query('wt', 'json')
-    .auth(solrUser, solrPass)
-
   errorHandler = (msg) ->
     (err) ->
       robot.logger.error "#{msg}: #{err}"
       null
 
-  # TODO: New Mosaic?
-  checkImport = (say) ->
-    say 'Checking in on the Mosaic import.'
+  checkImport = (say, checkNew) ->
+    host = if checkNew then solrNewHost else solrHost
+    say if checkNew then 'Checking on the NEW Mosaic import.' else 'Checking on the OLD Mosaic import.'
+    # This stuff is the same no matter how often we go there, save it.
+    solrHttp = robot.http(host)
+      .query('wt', 'json')
+      .auth(solrUser, solrPass)
+
     getImports = Promise.promisify(solrHttp.scope('people/dataimport').query('command', 'status').get(), solrHttp)().then ([resp, body]) ->
       response = JSON.parse body
       result =
@@ -88,8 +93,8 @@ module.exports = (robot) ->
       # Tell the world!
       say msgs.join('\n')
 
-  robot.respond /check mosaic( import)?/i, (msg) ->
-    checkImport(msg.send.bind(msg))
+  robot.respond /check( new)? mosaic( import)?/i, (msg) ->
+    checkImport(msg.send.bind(msg), msg.match[1])
 
   new CronJob mosaicImportCron, ->
     checkImport(sayMosaic)
