@@ -86,7 +86,7 @@ module.exports = (robot) ->
         msgs.push "Projects: #{numeral(coresResponse.projects).format('0,0')}"
         msgs.push "Project participants: #{numeral(coresResponse.projectParticipants).format('0,0')}"
       # Tell the world!
-      say.apply null, msgs
+      say msgs.join('\n')
 
   robot.respond /check mosaic( import)?/i, (msg) ->
     checkImport(msg.send.bind(msg))
