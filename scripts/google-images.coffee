@@ -44,6 +44,8 @@ imageMe = (msg, query, animated, faces, cb) ->
       q: query
       safe: googleSafetyLevel
       searchType: 'image'
+      lr: 'lang_en'
+      fields: 'items(link)'
     )
     .get() (err, res, body) ->
       if err
