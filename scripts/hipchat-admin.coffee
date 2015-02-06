@@ -36,7 +36,6 @@ module.exports = (robot) ->
         return
       room = room[0]
       robot.logger.info room
-      return
       # Grab the info about that room from Hipchat.
       robot.http('https://api.hipchat.com')
         .path("v2/room/#{room.name}")
