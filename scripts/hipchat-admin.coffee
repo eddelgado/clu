@@ -13,7 +13,7 @@ module.exports = (robot) ->
     robot.logger.warning 'The HIPCHAT_AUTH_TOKEN environment variable is not set'
     return
 
-  roomList = Promise (resolve, reject) ->
+  roomList = new Promise (resolve, reject) ->
     robot.http('https://api.hipchat.com/v2/room')
       .query('auth_token', AUTH_TOKEN)
       .get() (err, resp, body) ->
