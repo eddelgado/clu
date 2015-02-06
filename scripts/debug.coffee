@@ -8,6 +8,9 @@
 CircularJSON = require('circular-json')
 
 module.exports = (robot) ->
+  # clu is always available.
+  robot.adapter?.setAvailability 'chat'
+
   robot.respond /debug msg/i, (msg) ->
     asString = CircularJSON.stringify(msg)
     robot.logger.info asString
