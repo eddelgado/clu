@@ -31,11 +31,10 @@ module.exports = (robot) ->
     # API is case-sensitive.
     roomList.then (rooms) ->
       room = rooms.filter (room) -> room.name.toLowerCase() == roomName.toLowerCase()
-      if not room
+      if not room.length
         msg.send '''Couldn't find the room in the room list!'''
         return
-      robot.logger.info room
-      return
+      room = room[0]
       # Grab the info about that room from Hipchat.
       robot.http('https://api.hipchat.com')
         .path("v2/room/#{room.name}")
