@@ -65,7 +65,7 @@ module.exports = (robot) ->
         reply.push '.'
         msg.reply reply.join(''), url
 
-  robot.hear /whois (\d+)/i, (msg) ->
+  robot.hear /[whois|userid] (\d+)/i, (msg) ->
     id = msg.match[1]
     robot.http(host)
       .path('person/getPersonByUserId.mustache')
