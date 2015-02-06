@@ -24,7 +24,7 @@ module.exports = (robot) ->
 
   robot.respond /steal admin/i, (msg) ->
     roomName = msg.envelope.room
-    if not room
+    if not roomName
       msg.send 'Get a room first. :)'
       return
     # Find the ID of the room from the lowercase name because Hipchat's stupid
