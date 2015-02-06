@@ -31,7 +31,8 @@
     "cron": "^1.0.5",
     "numeral": "^1.5.3",
     "bluebird": "^2.6.2",
-    "hubot-redis-brain": "0.0.2"
+    "hubot-redis-brain": "0.0.2",
+    "circular-json": "^0.1.6"
   },
   "engines": {
     "node": "0.10.x",
