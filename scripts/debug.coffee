@@ -12,8 +12,8 @@ module.exports = (robot) ->
   robot.adapter?.setAvailability? 'chat'
 
   robot.respond /debug room/i, (msg) ->
-    msg.send "Room is #{msg.message.room}"
+    msg.send "Room is #{msg.envelope.room}"
 
   robot.respond /debug user/i, (msg) ->
-    user = CircularJSON.stringify msg.message?.user
+    user = CircularJSON.stringify msg.envelope?.user
     msg.send "User is #{user}"
