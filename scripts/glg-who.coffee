@@ -33,7 +33,7 @@ module.exports = (robot) ->
   user = process.env.EPIQUERY_USER
   pass = process.env.EPIQUERY_PASS
 
-  robot.hear /whois ([\w .\-]+)\?*$/i, (msg) ->
+  robot.hear /whois ([A-za-z\.\-]+(@glgroup\.com)?)/i, (msg) ->
     email = msg.match[1]
     if email.indexOf('@') == -1
       email = "#{email}@glgroup.com"
@@ -51,15 +51,40 @@ module.exports = (robot) ->
         body = response[0]
         firstname = body.rmFirstName
         lastname = body.rmLastName
-        id = body.personId
+        id = body.userId
         phoneExtension = body.rmExtension
         city = body.rmCity
         state = body.rmState
         reply = []
         url = "https://query.glgroup.com/person/getUserByEmail.mustache?Email=#{email}"
-        reply.push "You're looking for #{firstname} #{lastname} (#{id})"
+        reply.push "You're looking for #{firstname} #{lastname} (User ID: #{id})"
         if city and state
           reply.push " of #{city}, #{state}"
+        if phoneExtension
+          reply.push ". Their extension is #{phoneExtension}"
+        reply.push '.'
+        msg.reply reply.join(''), url
+
+  robot.hear /whois (\d+)/i, (msg) ->
+    id = msg.match[1]
+    robot.http(host)
+      .path('person/getPersonByUserId.mustache')
+      .query('userId', id)
+      .auth(user, pass)
+      .get() (err, resp, body) ->
+        return if err
+        response = JSON.parse body
+        if !response.length
+          msg.reply '''Hmm, couldn't find anyone with that user ID.'''
+          return
+        body = response[0]
+        firstname = body.FIRST_NAME
+        lastname = body.LAST_NAME
+        id = body.USER_ID
+        phoneExtension = body.EXTENSION
+        reply = []
+        url = "https://query.glgroup.com/person/getPersonByUserId.mustache?userId=#{id}"
+        reply.push "You're looking for #{firstname} #{lastname} (#{id})"
         if phoneExtension
           reply.push ". Their extension is #{phoneExtension}"
         reply.push '.'
