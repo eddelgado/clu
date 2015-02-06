@@ -80,11 +80,11 @@ module.exports = (robot) ->
         body = response[0]
         firstname = body.FIRST_NAME
         lastname = body.LAST_NAME
-        id = body.USER_ID
+        id = body.PERSON_ID
         phoneExtension = body.EXTENSION
         reply = []
         url = "https://query.glgroup.com/person/getPersonByUserId.mustache?userId=#{id}"
-        reply.push "You're looking for #{firstname} #{lastname} (#{id})"
+        reply.push "You're looking for #{firstname} #{lastname} (Person ID: #{id})"
         if phoneExtension
           reply.push ". Their extension is #{phoneExtension}"
         reply.push '.'
