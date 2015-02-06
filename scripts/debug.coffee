@@ -12,4 +12,10 @@ module.exports = (robot) ->
     asString = CircularJSON.stringify(msg)
     robot.logger.info asString
     msg.send "/code #{asString}"
-    msg.send 'Sent.'
+
+  robot.respond /debug room/i, (msg) ->
+    msg.send "Room is #{msg.message.room}"
+
+  robot.respond /debug user/i, (msg) ->
+    user = CircularJSON.stringify msg.message?.user
+    msg.send "User is #{user}"
