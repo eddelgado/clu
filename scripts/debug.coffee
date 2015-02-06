@@ -11,11 +11,6 @@ module.exports = (robot) ->
   # clu is always available.
   robot.adapter?.setAvailability? 'chat'
 
-  robot.respond /debug msg/i, (msg) ->
-    for k of msg
-      asString = CircularJSON.stringify(msg)
-      msg.send "/code #{k}:#{asString}"
-
   robot.respond /debug room/i, (msg) ->
     msg.send "Room is #{msg.message.room}"
 
