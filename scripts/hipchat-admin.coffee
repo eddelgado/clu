@@ -61,6 +61,7 @@ module.exports = (robot) ->
             .path("v2/room/#{room.name}")
             .query('authToken', AUTH_TOKEN)
             .put(JSON.stringify(room)) (err, resp, body) ->
+              robot.logger.info resp
               if err
                 robot.logger.error err
                 return
