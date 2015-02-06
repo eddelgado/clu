@@ -59,7 +59,7 @@ module.exports = (robot) ->
           robot.http('https://api.hipchat.com')
             .path("v2/room/#{room.name}")
             .query('authToken', AUTH_TOKEN)
-            .put() (err, resp, body) ->
+            .put(JSON.stringify(room)) (err, resp, body) ->
               if err
                 robot.logger.error err
                 return
