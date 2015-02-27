@@ -5,6 +5,8 @@
 //   clu zoom - Respond with a zoom meeting url
 //   clu meeting - Respond with a zoom meeting url
 //   start a meeting - Respond with a zoom meeting url
+//   start a zoom - Respond with a zoom meeting url
+//   zoom me - Respond with a zoom meeting url
 
 var qs = require('querystring');
 var https = require('https');
@@ -30,7 +32,7 @@ module.exports = function(robot) {
     })
   });
 
-  robot.hear(/start a meeting/i, function(msg) {
+  robot.hear(/(start a meeting|start a zoom|zoom me|^zoom$)/i, function(msg) {
     doGetZoomMeeting(function(zoomUrl) {
       msg.send(zoomUrl);
     })
