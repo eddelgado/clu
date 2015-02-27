@@ -75,6 +75,7 @@ module.exports = function(robot) {
       response.on('end', function doHandleRequestEnded() {
         try {
           var response = JSON.parse(_buffer);
+          console.dir(response);
           cb(response.start_url);
         } catch (Exception) {
           robot.logger.info("Could not parse response:" + _buffer);
