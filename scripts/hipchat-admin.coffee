@@ -56,7 +56,7 @@ module.exports = (robot) ->
           delete room.statistics
           delete room.xmpp_jid
           # Update to make current user the admin.
-          robot.logger.info "id: #{msg.envelope?.user?.id}"
+          console.dir(room)
           room.owner =
             id: msg.envelope?.user?.id
           # Send it back!
