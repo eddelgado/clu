@@ -16,6 +16,7 @@ module.exports = (robot) ->
   roomList = new Promise (resolve, reject) ->
     robot.http('https://api.hipchat.com/v2/room')
       .query('auth_token', AUTH_TOKEN)
+      .query('max-results', 1000)
       .get() (err, resp, body) ->
         return reject(err) if err
         response = JSON.parse body
@@ -30,7 +31,7 @@ module.exports = (robot) ->
     # Find the ID of the room from the lowercase name because Hipchat's stupid
     # API is case-sensitive.
     roomList.then (rooms) ->
-      console.log(rooms)
+      console.dir(rooms)
       room = rooms.filter (room) -> room.name.toLowerCase() == roomName.toLowerCase()
       if not room.length
         msg.send '''Couldn't find the room in the room list!'''
