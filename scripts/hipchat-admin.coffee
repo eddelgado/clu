@@ -33,9 +33,9 @@ module.exports = (robot) ->
     roomList.then (rooms) ->
       roomName = roomName
       room = rooms.filter (room) ->
-        console.log(room.name.toLowerCase().replace(/\W+/g," "))
-        console.log(roomName.toLowerCase().replace(/\W+/g," "))
-        room.name.toLowerCase().replace(/\W+/g," ") == roomName.toLowerCase()
+        console.log(room.name.toLowerCase().replace(/(\W|_)*/g," "))
+        console.log(roomName.toLowerCase().replace(/(\W|_)*/g," "))
+        room.name.toLowerCase().replace(/(\W|_)*/g," ") == roomName.toLowerCase().replace(/(\W|_)*/g," ")
       if not room.length
         msg.send '''Couldn't find the room in the room list!'''
         return
