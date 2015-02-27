@@ -21,6 +21,6 @@ module.exports = (robot) ->
     robot.logger.info(JSON.stringify(msg))
     msg.send "User is #{user}"
 
-  robot.respond /^say(.*)/i, (msg) ->
+  robot.hear /^say (.*)/i, (msg) ->
     what = msg.match[1]
     msg.send "#{{what}}"
