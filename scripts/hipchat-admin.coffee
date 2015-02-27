@@ -42,7 +42,7 @@ module.exports = (robot) ->
       # Grab the info about that room from Hipchat.
       robot.http('https://api.hipchat.com')
         .path("v2/room/#{room.id}")
-        .query('authToken', AUTH_TOKEN)
+        .query('auth_token', AUTH_TOKEN)
         .get() (err, resp, body) ->
           if err
             robot.logger.error err
@@ -65,7 +65,7 @@ module.exports = (robot) ->
           # Send it back!
           robot.http('https://api.hipchat.com')
             .path("v2/room/#{room.id}")
-            .query('authToken', AUTH_TOKEN)
+            .query('auth_token', AUTH_TOKEN)
             .put(JSON.stringify(room)) (err, resp, body) ->
               robot.logger.info body
               if err
