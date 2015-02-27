@@ -23,4 +23,4 @@ module.exports = (robot) ->
 
   robot.hear /^say (.*)/i, (msg) ->
     what = msg.match[1]
-    msg.send "#{{what}}"
+    msg.send "#{what}"
