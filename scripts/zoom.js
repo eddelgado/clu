@@ -51,7 +51,7 @@ module.exports = function(robot) {
       data_type: "JSON",
       host_id: hostId,
       topic: "Clu Bot Meeting",
-      type: 1,
+      type: 3,
       option_jbh: true
     };
 
