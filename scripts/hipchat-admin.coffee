@@ -38,10 +38,11 @@ module.exports = (robot) ->
         msg.send '''Couldn't find the room in the room list!'''
         return
       room = room[0]
+      id = room.id
       robot.logger.info room
       # Grab the info about that room from Hipchat.
       robot.http('https://api.hipchat.com')
-        .path("v2/room/#{room.id}")
+        .path("v2/room/#{id}")
         .query('auth_token', AUTH_TOKEN)
         .get() (err, resp, body) ->
           if err
@@ -64,7 +65,7 @@ module.exports = (robot) ->
             id: msg.envelope?.user?.id
           # Send it back!
           robot.http('https://api.hipchat.com')
-            .path("v2/room/#{room.id}")
+            .path("v2/room/#{id}")
             .query('auth_token', AUTH_TOKEN)
             .put(JSON.stringify(room)) (err, resp, body) ->
               robot.logger.info body
