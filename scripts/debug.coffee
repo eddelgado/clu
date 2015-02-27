@@ -13,10 +13,12 @@ module.exports = (robot) ->
 
   robot.respond /debug room/i, (msg) ->
     console.dir(msg);
+    robot.logger.info(JSON.stringify(msg))
     msg.send "Room is #{msg.envelope.room}"
 
   robot.respond /debug user/i, (msg) ->
     console.dir(msg);
+    robot.logger.info(JSON.stringify(msg))
     msg.send "User is #{user}"
 
   robot.respond /^say(.*)/i, (msg) ->
