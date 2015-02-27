@@ -72,4 +72,4 @@ module.exports = (robot) ->
               if err
                 robot.logger.error err
                 return
-              msg.send "#{msg.envelope.user.name} is now room owner"
+              msg.send "#{msg.message.user.name} is now room owner"
