@@ -32,6 +32,7 @@ module.exports = (robot) ->
     # API is case-sensitive.
     roomList.then (rooms) ->
       console.dir(rooms)
+      roomName = roomName.replace("_"," ");
       room = rooms.filter (room) -> room.name.toLowerCase() == roomName.toLowerCase()
       if not room.length
         msg.send '''Couldn't find the room in the room list!'''
