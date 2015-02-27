@@ -48,6 +48,7 @@
     "hubot": "./bin/hubot"
   },
   "scripts": {
+    "start": "node_modules/hubot/bin/hubot --adapter hipchat"
     "test": "./script/test"
   }
 }
