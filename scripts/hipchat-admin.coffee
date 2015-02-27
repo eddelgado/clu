@@ -31,11 +31,11 @@ module.exports = (robot) ->
     # Find the ID of the room from the lowercase name because Hipchat's stupid
     # API is case-sensitive.
     roomList.then (rooms) ->
-      console.dir(rooms)
-      console.log(roomName)
-      roomName = roomName.replace("_"," ");
-      console.log(roomName)
-      room = rooms.filter (room) -> room.name.toLowerCase() == roomName.toLowerCase()
+      roomName = roomName
+      room = rooms.filter (room) ->
+        console.log(room.name.toLowerCase().replace(/\W+/g," "))
+        console.log(roomName.toLowerCase().replace(/\W+/g," "))
+        room.name.toLowerCase().replace(/\W+/g," ") == roomName.toLowerCase()
       if not room.length
         msg.send '''Couldn't find the room in the room list!'''
         return
