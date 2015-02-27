@@ -12,8 +12,13 @@ module.exports = (robot) ->
   robot.adapter?.setAvailability? 'chat'
 
   robot.respond /debug room/i, (msg) ->
+    console.dir(msg);
     msg.send "Room is #{msg.envelope.room}"
 
   robot.respond /debug user/i, (msg) ->
-    user = CircularJSON.stringify msg.envelope?.user
+    console.dir(msg);
     msg.send "User is #{user}"
+
+  robot.respond /^say(.*)/i, (msg) ->
+    what = msg.match[1]
+    msg.send "#{{what}}"
