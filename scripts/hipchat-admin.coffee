@@ -47,8 +47,8 @@ module.exports = (robot) ->
           if err
             robot.logger.error err
             return
-          room = JSON.parse body
           robot.logger.info body
+          room = JSON.parse body
           # Re-use the response after cleaning it up a bit
           delete room.created
           delete room.guest_access_url
