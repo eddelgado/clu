@@ -84,6 +84,7 @@ module.exports = function(robot) {
           doSendResponse(msg, service + " not found");
         }
         exec('sudo rm -rf ' + _path);
+        console.log('sudo rm -rf ' + _path);
         doSendResponse(msg, service + " redeploying");
         doHandleWatchCommand(msg, service);
       });
