@@ -33,17 +33,17 @@ module.exports = function(robot) {
 
   var _watchers = {};
 
-    robot.hear(/^starphleet\s*(\w+|\d+)$/i, function(msg) {
-      var _command = msg.match[1];
-      switch (_command) {
-        case "quiet":
-          doHandleQuietCommand(msg);
-          break;
-        default:
-          doSendResponse(msg, _command + " is not recognized");
-          break;
-      }
-    });
+  robot.hear(/^starphleet\s*(\w+|\d+)$/i, function(msg) {
+    var _command = msg.match[1];
+    switch (_command) {
+      case "quiet":
+        doHandleQuietCommand(msg);
+        break;
+      default:
+        doSendResponse(msg, _command + " is not recognized");
+        break;
+    }
+  });
 
   robot.hear(/^starphleet\s*(\w+|\d+)\s*(\w+|\d+)$/i, function(msg) {
     var _service = msg.match[1];
@@ -102,12 +102,12 @@ module.exports = function(robot) {
           doSendResponse(msg, service + " not found");
         }
         // Update our status to building
-        exec('echo building | sudo tee -a "' + _statusFile + '"');
+        exec('echo building | sudo tee "' + _statusFile + '"');
         // Remove git dir
         exec('sudo rm -rf ' + _path);
         console.log('sudo rm -rf ' + _path);
-        doSendResponse(msg, service + " redeploying");
-        doHandleWatchCommand(msg, service);
+        var _reply = "Service [" + service + "]: " + currentStatus;
+        doHandleWatchCommand(msg, _reply);
       });
     } catch (Exception) {
       doSendResponse(msg, service + " not found");
