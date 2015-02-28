@@ -131,7 +131,7 @@ module.exports = function(robot) {
           _previousStatus = currentStatus;
         }
       });
-    }, 1000);
+    }, 100);
   };
 
   var doHandleStatusCommand = function doHandleStatusCommand(msg, service) {
