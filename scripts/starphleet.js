@@ -34,8 +34,9 @@ module.exports = function(robot) {
   var _watchers = {};
 
   robot.hear(/^starphleet\s*(\w+|\d+)\s*(\w+|\d+).*/i, function(msg) {
+    console.log("HERE!");
     var _command = msg.match[1];
-    var _service = msg.match[1];
+    var _service = msg.match[2];
     switch (_command) {
       case "status":
         doHandleStatusCommand(msg, _service);
@@ -87,7 +88,6 @@ module.exports = function(robot) {
       });
     } catch (Exception) {
       doSendResponse(msg, service + " not found");
-      doSendResponse("Service not found");
     }
   };
 
@@ -131,7 +131,8 @@ module.exports = function(robot) {
         doSendResponse(msg, data);
       });
     } catch (Exception) {
-      doSendResponse(msg, "Service not found");
+      console.dir(Exception);
+      doSendResponse(msg, service + " not found");
     }
   };
 };
