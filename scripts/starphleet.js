@@ -60,7 +60,7 @@ module.exports = function(robot) {
     _response += process.env.LABEL ? process.env.LABEL + ": " : "";
     _response += response;
     // Send the response back to the requestor
-    msg.send(_response);
+    msg.reply(_response);
   };
 
   var doClearIntervalTimer = function doClearIntervalTimer(user) {
@@ -84,6 +84,7 @@ module.exports = function(robot) {
         }
         exec('sudo rm -rf ' + _path);
         doSendResponse(msg, service + " redeploying");
+        doHandleWatchCommand(msg, service);
       });
     } catch (Exception) {
       doSendResponse(msg, service + " not found");
