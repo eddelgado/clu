@@ -95,10 +95,10 @@ module.exports = function(robot) {
         if (err || !stats.isDirectory()) {
           doSendResponse(msg, service + " not found");
         }
-        doRunRootHostCommand("lxc-redeploy " + service);
+        doRunRootHostCommand("starphleet-redeploy " + service);
         var _reply = "Service [" + service + "]: " + "redeploying";
         doSendResponse(msg, _reply);
-        // doHandleWatchCommand(msg, service);
+        doHandleWatchCommand(msg, service);
       });
     } catch (Exception) {
       doSendResponse(msg, service + " not found");
@@ -116,9 +116,9 @@ module.exports = function(robot) {
       }
       _cmds.push('echo "' + cmd + '" | sudo tee -a "' + _commandFile + '"');
       for (var c = 0; c < _cmds.length; c++) {
-        console.log(_cmds[c]);
-        console.dir(exec);
-        console.dir(_cmds);
+        // console.log(_cmds[c]);
+        // console.dir(exec);
+        // console.dir(_cmds);
         exec(_cmds[c], function(err,std,stderr) {
           if (err) { throw err; }
         });
@@ -155,8 +155,6 @@ module.exports = function(robot) {
     doClearIntervalTimer(_name);
     _watchers[_name] = setInterval(function doWatchFileAndReportDiffs() {
       doGetStatusFromCurrentOrders(service, function(currentStatus) {
-        console.log("PS", _previousStatus);
-        console.log("CS", currentStatus);
         if (_previousStatus !== currentStatus) {
           var _reply = "Service [" + service + "]: " + currentStatus;
           doSendResponse(msg, _reply);
