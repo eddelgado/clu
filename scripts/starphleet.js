@@ -116,6 +116,7 @@ module.exports = function(robot) {
       }
       _cmds.push('echo "' + cmd + '" | sudo tee -a "' + _commandFile + '"');
       for (var c = 0; c < _cmds.length; c++) {
+        console.log(_cmds[c]);
         exec(_cmds[c]);
       }
     });
