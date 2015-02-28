@@ -73,7 +73,7 @@ module.exports = function(robot) {
     _response += process.env.LABEL ? process.env.LABEL + ": " : "";
     _response += response;
     // Send the response back to the requestor
-    msg.reply(_response);
+    msg.send(_response);
   };
 
   var doClearIntervalTimer = function doClearIntervalTimer(user) {
@@ -96,7 +96,10 @@ module.exports = function(robot) {
           doSendResponse(msg, service + " not found");
         }
         doRunRootHostCommand("starphleet-redeploy " + service);
-        var _reply = "Service [" + service + "]: " + "redeploying";
+        var _reply = "";
+        _reply = "Service [" + service + "]: " + "Queued For Redeploy";
+        doSendResponse(msg, _reply);
+        _reply = "Service [" + service + "]: " + "------------------";
         doSendResponse(msg, _reply);
         doHandleWatchCommand(msg, service);
       });
