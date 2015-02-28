@@ -73,7 +73,7 @@ module.exports = function(robot) {
   var doHandleRedeployCommand = function doHandleRedeployCommand(msg, service) {
     try {
       // Build a path to the git repo
-      var _path;
+      var _path = "";
       _path += process.env.PATH_STARPHLEET_HEADQUARTERS;
       _path += "/" + service;
       _path += "/git";
@@ -82,7 +82,8 @@ module.exports = function(robot) {
         if (!stats.isDirectory() || err) {
           doSendResponse(msg, service + " not found");
         }
-        exec('sudo rm -rf ' + _path);
+        // exec('sudo rm -rf ' + _path);
+        console.log('sudo rm -rf ' + _path);
         doSendResponse(msg, service + " redeploying");
       });
     } catch (Exception) {
@@ -92,7 +93,7 @@ module.exports = function(robot) {
 
   var doGetStatusFromCurrentOrders = function doGetStatusFromCurrentOrders(service, cb) {
     // Build a bath to the status file
-    var _path;
+    var _path = "";
     _path += process.env.PATH_STARPHLEET_CURRENT_ORDERS;
     _path += "/" + service;
     _path += "/" + process.env.FILE_STARPHLEET_ORDERS_STATUS;
