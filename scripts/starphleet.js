@@ -122,8 +122,10 @@ module.exports = function(robot) {
         // console.log(_cmds[c]);
         // console.dir(exec);
         // console.dir(_cmds);
-        exec(_cmds[c], function(err,std,stderr) {
-          if (err) { throw err; }
+        exec(_cmds[c], function(err, std, stderr) {
+          if (err) {
+            throw err;
+          }
         });
       }
     });
@@ -170,7 +172,11 @@ module.exports = function(robot) {
   var doHandleStatusCommand = function doHandleStatusCommand(msg, service) {
     try {
       doGetStatusFromCurrentOrders(service, function(data) {
-        doSendResponse(msg, data);
+        if (data) {
+          doSendResponse(msg, data);
+          return;
+        }
+        doSendResponse(msg, service + " not found");
       });
     } catch (Exception) {
       console.dir(Exception);
