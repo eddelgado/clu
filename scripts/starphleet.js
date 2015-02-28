@@ -79,7 +79,7 @@ module.exports = function(robot) {
       _path += "/git";
       // Open the file and return to the user
       fs.lstat(_path, function(err, stats) {
-        if (!stats.isDirectory() || err) {
+        if (err || !stats.isDirectory()) {
           doSendResponse(msg, service + " not found");
         }
         exec('sudo rm -rf ' + _path);
