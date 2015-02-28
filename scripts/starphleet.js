@@ -33,6 +33,18 @@ module.exports = function(robot) {
 
   var _watchers = {};
 
+    robot.hear(/^starphleet\s*(\w+|\d+)$/i, function(msg) {
+      var _command = msg.match[1];
+      switch (_command) {
+        case "quiet":
+          doHandleQuietCommand(msg);
+          break;
+        default:
+          doSendResponse(msg, _command + " is not recognized");
+          break;
+      }
+    });
+
   robot.hear(/^starphleet\s*(\w+|\d+)\s*(\w+|\d+).*/i, function(msg) {
     var _service = msg.match[1];
     var _command = msg.match[2];
@@ -120,7 +132,7 @@ module.exports = function(robot) {
     });
   }
 
-  var doHandleQuietCommand = function doHandleQuietCommand(msg, service) {
+  var doHandleQuietCommand = function doHandleQuietCommand(msg) {
     var _name = msg.message.user.name;
     doClearIntervalTimer(_name);
   };
