@@ -109,7 +109,7 @@ module.exports = function(robot) {
     });
   }
 
-  var doHandleWatchCommand = function doHandleWatchCommand(msg, service) {
+  var doHandleQuietCommand = function doHandleQuietCommand(msg, service) {
     var _name = msg.message.user.name;
     doClearIntervalTimer(_name);
   };
