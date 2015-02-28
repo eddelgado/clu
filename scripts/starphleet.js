@@ -47,7 +47,7 @@ module.exports = function(robot) {
         doHandleWatchCommand(msg, _service);
         break;
       case "quiet":
-        doHandleRedeployCommand(msg, _service);
+        doHandleQuietCommand(msg, _service);
         break;
       default:
         break;
@@ -82,8 +82,7 @@ module.exports = function(robot) {
         if (!stats.isDirectory() || err) {
           doSendResponse(msg, service + " not found");
         }
-        // exec('sudo rm -rf ' + _path);
-        console.log('sudo rm -rf ' + _path);
+        exec('sudo rm -rf ' + _path);
         doSendResponse(msg, service + " redeploying");
       });
     } catch (Exception) {
@@ -110,6 +109,10 @@ module.exports = function(robot) {
     });
   }
 
+  var doHandleWatchCommand = function doHandleWatchCommand(msg, service) {
+    var _name = msg.message.user.name;
+    doClearIntervalTimer(_name);
+  };
 
   var doHandleWatchCommand = function doHandleWatchCommand(msg, service) {
     var _name = msg.message.user.name;
@@ -117,6 +120,8 @@ module.exports = function(robot) {
     doClearIntervalTimer(_name);
     _watchers[_name] = setInterval(function doWatchFileAndReportDiffs() {
       doGetStatusFromCurrentOrders(service, function(currentStatus) {
+        console.log("PS", _previousStatus);
+        console.log("CS", currentStatus);
         if (_previousStatus !== currentStatus) {
           var _reply = "Service [" + service + "]: " + currentStatus;
           doSendResponse(msg, _reply);
