@@ -34,7 +34,6 @@ module.exports = function(robot) {
   var _watchers = {};
 
   robot.hear(/^starphleet\s*(\w+|\d+)\s*(\w+|\d+).*/i, function(msg) {
-    console.log("HERE!");
     var _command = msg.match[1];
     var _service = msg.match[2];
     switch (_command) {
@@ -97,6 +96,7 @@ module.exports = function(robot) {
     _path += process.env.PATH_STARPHLEET_CURRENT_ORDERS;
     _path += "/" + service;
     _path += "/" + process.env.FILE_STARPHLEET_ORDERS_STATUS;
+    console.log("P: " + _path);
     // The status files in starphleet contain a small blurb about
     // the deployment status of this service.  Just return it to the user
     fs.readFile(_path, 'r', function(err, data) {
