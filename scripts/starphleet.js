@@ -11,7 +11,7 @@
 var qs = require('querystring');
 var https = require('https');
 var fs = require('fs');
-var exec = require('child_process').spawnSync;
+var exec = require('child_process').exec;
 
 // If no HEADQUARTERS path is set.. punt
 if (!process.env.PATH_STARPHLEET_HEADQUARTERS) {
