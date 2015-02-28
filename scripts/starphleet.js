@@ -11,7 +11,7 @@
 var qs = require('querystring');
 var https = require('https');
 var fs = require('fs');
-var exec = require('child_process').exec;
+var exec = require('child_process').execSync;
 
 // If no HEADQUARTERS path is set.. punt
 if (!process.env.PATH_STARPHLEET_HEADQUARTERS) {
@@ -86,12 +86,6 @@ module.exports = function(robot) {
   var doHandleRedeployCommand = function doHandleRedeployCommand(msg, service) {
     try {
       // Build a path to the git repo
-
-      var _statusFile = "";
-      _statusFile += process.env.PATH_STARPHLEET_CURRENT_ORDERS;
-      _statusFile += "/" + service;
-      _statusFile += "/" + process.env.FILE_STARPHLEET_ORDERS_STATUS;
-
       var _path = "";
       _path += process.env.PATH_STARPHLEET_HEADQUARTERS;
       _path += "/" + service;
@@ -101,17 +95,30 @@ module.exports = function(robot) {
         if (err || !stats.isDirectory()) {
           doSendResponse(msg, service + " not found");
         }
-        // Update our status to building
-        exec('echo building | sudo tee "' + _statusFile + '"');
-        // Remove git dir
-        exec('sudo rm -rf ' + _path);
-        console.log('sudo rm -rf ' + _path);
-        var _reply = "Service [" + service + "]: " + currentStatus;
-        doHandleWatchCommand(msg, _reply);
+        doRunRootHostCommand("lxc-redeploy " + service);
+        var _reply = "Service [" + service + "]: " + "redeploying";
+        doSendResponse(msg, _reply);
+        doHandleWatchCommand(msg, service);
       });
     } catch (Exception) {
       doSendResponse(msg, service + " not found");
     }
+  };
+
+  var doRunRootHostCommand = function doRunRootHostCommand(cmd) {
+    var _commandDir = "/var/starphleet/headquarters/clucommands";
+    var _commandFile = _commandDir + "/orders";
+    var _cmds = [];
+    fs.lstat(_commandFile, function(err, stats) {
+      if (err || !stats.isFile()) {
+        _cmds.push("mkdir -p " + _commandDir);
+        _cmds.push('echo "sudo rm ' + _commandFile + '" | sudo tee -a "' + _commandFile + '"');
+      }
+      _cmds.push('echo "' + cmd + '" | sudo tee -a "' + _commandFile + '"');
+      for (var c = 0; c < _cmds.length; c++) {
+        exec(_cmds[c]);
+      }
+    });
   };
 
   var doGetStatusFromCurrentOrders = function doGetStatusFromCurrentOrders(service, cb) {
