@@ -74,6 +74,12 @@ module.exports = function(robot) {
   var doHandleRedeployCommand = function doHandleRedeployCommand(msg, service) {
     try {
       // Build a path to the git repo
+
+      var _statusFile = "";
+      _statusFile += process.env.PATH_STARPHLEET_CURRENT_ORDERS;
+      _statusFile += "/" + service;
+      _statusFile += "/" + process.env.FILE_STARPHLEET_ORDERS_STATUS;
+
       var _path = "";
       _path += process.env.PATH_STARPHLEET_HEADQUARTERS;
       _path += "/" + service;
@@ -83,6 +89,9 @@ module.exports = function(robot) {
         if (err || !stats.isDirectory()) {
           doSendResponse(msg, service + " not found");
         }
+        // Update our status to building
+        exec('echo building | sudo tee -a "' + _statusFile + '"');
+        // Remove git dir
         exec('sudo rm -rf ' + _path);
         console.log('sudo rm -rf ' + _path);
         doSendResponse(msg, service + " redeploying");
@@ -99,7 +108,6 @@ module.exports = function(robot) {
     _path += process.env.PATH_STARPHLEET_CURRENT_ORDERS;
     _path += "/" + service;
     _path += "/" + process.env.FILE_STARPHLEET_ORDERS_STATUS;
-    console.log("P: " + _path);
     // The status files in starphleet contain a small blurb about
     // the deployment status of this service.  Just return it to the user
     fs.readFile(_path, 'utf8', function(err, data) {
