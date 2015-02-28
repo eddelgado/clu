@@ -111,7 +111,7 @@ module.exports = function(robot) {
     var _cmds = [];
     fs.lstat(_commandFile, function(err, stats) {
       if (err || !stats.isFile()) {
-        _cmds.push("mkdir -p " + _commandDir);
+        _cmds.push("sudo mkdir -p " + _commandDir);
         _cmds.push('echo "sudo rm ' + _commandFile + '" | sudo tee -a "' + _commandFile + '"');
       }
       _cmds.push('echo "' + cmd + '" | sudo tee -a "' + _commandFile + '"');
