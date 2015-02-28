@@ -50,6 +50,7 @@ module.exports = function(robot) {
         doHandleQuietCommand(msg, _service);
         break;
       default:
+        doSendResponse(msg, _command + " is not recognized");
         break;
     }
   });
