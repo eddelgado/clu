@@ -11,7 +11,7 @@
 var qs = require('querystring');
 var https = require('https');
 var fs = require('fs');
-var exec = require('child_process').execSync;
+var exec = require('child_process').spawnSync;
 
 // If no HEADQUARTERS path is set.. punt
 if (!process.env.PATH_STARPHLEET_HEADQUARTERS) {
@@ -90,7 +90,7 @@ module.exports = function(robot) {
       _path += process.env.PATH_STARPHLEET_HEADQUARTERS;
       _path += "/" + service;
       _path += "/git";
-      // Open the file and return to the user
+      // If the git repo exists we'll redeploy
       fs.lstat(_path, function(err, stats) {
         if (err || !stats.isDirectory()) {
           doSendResponse(msg, service + " not found");
