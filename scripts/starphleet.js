@@ -98,7 +98,7 @@ module.exports = function(robot) {
         doRunRootHostCommand("lxc-redeploy " + service);
         var _reply = "Service [" + service + "]: " + "redeploying";
         doSendResponse(msg, _reply);
-        doHandleWatchCommand(msg, service);
+        // doHandleWatchCommand(msg, service);
       });
     } catch (Exception) {
       doSendResponse(msg, service + " not found");
