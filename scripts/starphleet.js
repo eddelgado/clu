@@ -33,7 +33,7 @@ module.exports = function(robot) {
 
   var _watchers = {};
 
-  robot.hear(/^starphleet\s*(\w+|\d+)$/i, function(msg) {
+  robot.hear(/^starphleet\s+(\w+|\d+)$/i, function(msg) {
     var _command = msg.match[1];
     switch (_command) {
       case "quiet":
@@ -45,7 +45,7 @@ module.exports = function(robot) {
     }
   });
 
-  robot.hear(/^starphleet\s*(\w+|\d+)\s*(\w+|\d+)$/i, function(msg) {
+  robot.hear(/^starphleet\s+(\w+|\d+)\s+(\w+|\d+)$/i, function(msg) {
     var _service = msg.match[1];
     var _command = msg.match[2];
     switch (_command) {
