@@ -100,7 +100,7 @@ module.exports = function(robot) {
     console.log("P: " + _path);
     // The status files in starphleet contain a small blurb about
     // the deployment status of this service.  Just return it to the user
-    fs.readFile(_path, 'r', function(err, data) {
+    fs.readFile(_path, function(err, data) {
       // Throw an exception if we have a problem
       if (err) {
         throw "File Error";
