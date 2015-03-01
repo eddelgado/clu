@@ -5,6 +5,7 @@
 //   starphleet <service> watch - Proactively watch status changes for a service in a region
 //   starphleet <service> status - Get the status of a service for each region
 //   starphleet <service> redeploy - HARD redeploy a service for each region
+//   starphleet quiet - Stop listening to services you've watched
 //   status - Get the status of clu for each region
 
 var qs = require('querystring');
@@ -170,6 +171,7 @@ module.exports = function(robot) {
   var doHandleQuietCommand = function doHandleQuietCommand(msg) {
     var _name = msg.message.user.name;
     doClearIntervalTimer(_name);
+    doSendResponse(msg,"Watch disabled [" + _name + "]");
   };
 
   var doHandleWatchUntilOnlineCommand = function doHandleWatchUntilOnlineCommand(msg, service) {
