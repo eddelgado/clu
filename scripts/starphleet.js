@@ -33,6 +33,10 @@ module.exports = function(robot) {
 
   var _watchers = {};
 
+  robot.hear(/^status$/i, function(msg) {
+    doSendResponse(msg, robot.name + " is online");
+  });
+
   robot.hear(/^starphleet\s+(\w+|\d+)$/i, function(msg) {
     var _command = msg.match[1];
     switch (_command) {
@@ -150,6 +154,28 @@ module.exports = function(robot) {
   var doHandleQuietCommand = function doHandleQuietCommand(msg) {
     var _name = msg.message.user.name;
     doClearIntervalTimer(_name);
+  };
+
+  var doHandleWatchUntilOnlineCommand = function doHandleWatchUntilOnlineCommand(msg, service) {
+    var _name = msg.message.user.name;
+    var _previousStatus = "";
+    var _isReadyToComplete = false;
+    doClearIntervalTimer(_name);
+    _watchers[_name] = setInterval(function doWatchFileAndReportDiffs() {
+      doGetStatusFromCurrentOrders(service, function(currentStatus) {
+        if (currentStatus !== "online" && _isReadyToComplete ) {
+          _isReadyToComplete = true;
+        }
+        if (_previousStatus !== currentStatus) {
+          var _reply = "Service [" + service + "]: " + currentStatus;
+          doSendResponse(msg, _reply);
+          _previousStatus = currentStatus;
+        }
+        if (currentStatus === "online" && _isReadyToComplete) {
+          doClearIntervalTimer(_name);
+        }
+      });
+    }, 1000);
   };
 
   var doHandleWatchCommand = function doHandleWatchCommand(msg, service) {
