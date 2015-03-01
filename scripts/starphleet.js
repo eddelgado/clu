@@ -40,6 +40,9 @@ module.exports = function(robot) {
     "jobs[us-west-2c]": "jobs[west]"
   };
 
+  robot.respond(/^DIE$/i, function(msg) {
+    process.exit(0);
+  });
   robot.hear(/^status$/i, function(msg) {
     doSendResponse(msg, robot.name + " is online");
   });
