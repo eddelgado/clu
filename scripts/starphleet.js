@@ -40,9 +40,11 @@ module.exports = function(robot) {
     "jobs[us-west-2c]": "jobs[west]"
   };
 
+  // Support the die command
   robot.respond(/^DIE$/i, function(msg) {
     process.exit(0);
   });
+
   robot.hear(/^status$/i, function(msg) {
     doSendResponse(msg, robot.name + " is online");
   });
@@ -213,7 +215,8 @@ module.exports = function(robot) {
   var doHandleStatusCommand = function doHandleStatusCommand(msg, service) {
     try {
       doGetStatusFromCurrentOrders(service, function(data) {
-        doSendResponse(msg, data);
+        var _reply = "Service [" + service + "]: " + data;
+        doSendResponse(msg, _reply);
       });
     } catch (Exception) {
       console.dir(Exception);
