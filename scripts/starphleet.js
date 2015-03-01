@@ -33,10 +33,11 @@ module.exports = function(robot) {
   var _watchers = {};
 
   var _friendlyRegions = {
-    "[us-east-1c]": "east",
-    "[us-west-2c]": "west",
-    "[eu-west-1c]": "europe",
-    "[ap-northeast-1a]": "asia"
+    "starphleet[us-east-1c]": "starphleet[east]",
+    "starphleet[us-west-2c]": "starphleet[west]",
+    "starphleet[eu-west-1c]": "starphleet[europe]",
+    "starphleet[ap-northeast-1a]": "starphleet[asia]",
+    "jobs[us-west-2c]": "jobs[west]"
   };
 
   robot.hear(/^status$/i, function(msg) {
