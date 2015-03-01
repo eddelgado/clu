@@ -95,6 +95,12 @@ module.exports = function(robot) {
         if (err || !stats.isDirectory()) {
           doSendResponse(msg, service + " not found");
         }
+        doRunRootHostCommand("starphleet-redeploy " + service);
+        var _reply = "";
+        _reply = "Service [" + service + "]: " + "Queued For Redeploy";
+        doSendResponse(msg, _reply);
+        _reply = "Service [" + service + "]: " + "------------------";
+        doSendResponse(msg, _reply);
         doHandleWatchCommand(msg, service);
       });
     } catch (Exception) {
@@ -155,7 +161,7 @@ module.exports = function(robot) {
     _watchers[_name] = setInterval(function doWatchFileAndReportDiffs() {
       doGetStatusFromCurrentOrders(service, function(currentStatus) {
         if (_previousStatus !== currentStatus) {
-          var _reply = "Watching [" + service + "]: " + currentStatus;
+          var _reply = "Service [" + service + "]: " + currentStatus;
           doSendResponse(msg, _reply);
           _previousStatus = currentStatus;
         }
