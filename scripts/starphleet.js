@@ -49,9 +49,9 @@ module.exports = function(robot) {
     }
   });
 
-  robot.hear(/^starphleet\s+(\w+|\d+)\s+(\w+|\d+)$/i, function(msg) {
-    var _service = msg.match[1];
-    var _command = msg.match[2];
+  robot.hear(/^(starphleet|s)\s+(\w+|\d+)\s+(\w+|\d+)$/i, function(msg) {
+    var _service = msg.match[2];
+    var _command = msg.match[3];
     switch (_command) {
       case "status":
         doHandleStatusCommand(msg, _service);
