@@ -1,12 +1,11 @@
 // Description
-//   Get a zoom meeting room link
+//   Starphleet Support
 //
 // Commands:
-//   clu zoom - Respond with a zoom meeting url
-//   clu meeting - Respond with a zoom meeting url
-//   start a meeting - Respond with a zoom meeting url
-//   start a zoom - Respond with a zoom meeting url
-//   zoom me - Respond with a zoom meeting url
+//   starphleet <service> watch - Proactively watch status changes for a service in a region
+//   starphleet <service> status - Get the status of a service for each region
+//   starphleet <service> redeploy - HARD redeploy a service for each region
+//   status - Get the status of clu for each region
 
 var qs = require('querystring');
 var https = require('https');
@@ -32,6 +31,13 @@ if (!process.env.PATH_STARPHLEET_CURRENT_ORDERS) {
 module.exports = function(robot) {
 
   var _watchers = {};
+
+  var _friendlyRegions = {
+    "us-east-1c": "east",
+    "us-west-2c": "west",
+    "eu-west-1c": "europe",
+    "ap-northeast-1a": "asia"
+  };
 
   robot.hear(/^status$/i, function(msg) {
     doSendResponse(msg, robot.name + " is online");
@@ -74,7 +80,11 @@ module.exports = function(robot) {
   var doSendResponse = function doSendResponse(msg, response) {
     // Try to build a response that specifies our region
     var _response = "";
-    _response += process.env.LABEL ? process.env.LABEL + ": " : "";
+    if (_friendlyRegions[process.env.LABEL]) {
+      _response += _friendlyRegions[process.env.LABEL] + ": ";
+    } else {
+      _response += process.env.LABEL ? process.env.LABEL + ": " : "";
+    }
     _response += response;
     // Send the response back to the requestor
     msg.send(_response);
@@ -124,8 +134,10 @@ module.exports = function(robot) {
         // console.log(_cmds[c]);
         // console.dir(exec);
         // console.dir(_cmds);
-        exec(_cmds[c], function(err,std,stderr) {
-          if (err) { throw err; }
+        exec(_cmds[c], function(err, std, stderr) {
+          if (err) {
+            throw err;
+          }
         });
       }
     });
@@ -162,7 +174,7 @@ module.exports = function(robot) {
     doClearIntervalTimer(_name);
     _watchers[_name] = setInterval(function doWatchFileAndReportDiffs() {
       doGetStatusFromCurrentOrders(service, function(currentStatus) {
-        if (currentStatus !== "online" && _isReadyToComplete ) {
+        if (currentStatus !== "online" && _isReadyToComplete) {
           _isReadyToComplete = true;
         }
         if (_previousStatus !== currentStatus) {
