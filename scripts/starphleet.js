@@ -98,6 +98,7 @@ module.exports = function(robot) {
       fs.lstat(_path, function(err, stats) {
         if (err || !stats.isDirectory()) {
           doSendResponse(msg, service + " not found");
+          return;
         }
         doRunRootHostCommand("starphleet-redeploy " + service);
         _reply = "Redeployed [" + service + "]: started";
@@ -170,7 +171,7 @@ module.exports = function(robot) {
           _previousStatus = currentStatus;
         }
         if (currentStatus === "online" && _isReadyToComplete) {
-          _reply = "Service [" + service + "]: " + complete;
+          _reply = "Service [" + service + "]: complete";
           doSendResponse(msg, _reply);
           doClearIntervalTimer(_name);
         }
