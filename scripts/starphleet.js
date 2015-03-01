@@ -100,12 +100,9 @@ module.exports = function(robot) {
           doSendResponse(msg, service + " not found");
         }
         doRunRootHostCommand("starphleet-redeploy " + service);
-        var _reply = "";
-        _reply = "Service [" + service + "]: " + "Queued For Redeploy";
+        _reply = "Redeployed [" + service + "]: started";
         doSendResponse(msg, _reply);
-        _reply = "Service [" + service + "]: " + "------------------";
-        doSendResponse(msg, _reply);
-        doHandleWatchCommand(msg, service);
+        doHandleWatchUntilOnlineCommand(msg, service);
       });
     } catch (Exception) {
       doSendResponse(msg, service + " not found");
@@ -160,6 +157,7 @@ module.exports = function(robot) {
     var _name = msg.message.user.name;
     var _previousStatus = "";
     var _isReadyToComplete = false;
+    var _reply = "";
     doClearIntervalTimer(_name);
     _watchers[_name] = setInterval(function doWatchFileAndReportDiffs() {
       doGetStatusFromCurrentOrders(service, function(currentStatus) {
@@ -167,11 +165,13 @@ module.exports = function(robot) {
           _isReadyToComplete = true;
         }
         if (_previousStatus !== currentStatus) {
-          var _reply = "Service [" + service + "]: " + currentStatus;
+          _reply = "Service [" + service + "]: " + currentStatus;
           doSendResponse(msg, _reply);
           _previousStatus = currentStatus;
         }
         if (currentStatus === "online" && _isReadyToComplete) {
+          _reply = "Service [" + service + "]: " + complete;
+          doSendResponse(msg, _reply);
           doClearIntervalTimer(_name);
         }
       });
