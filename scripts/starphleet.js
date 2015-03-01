@@ -33,8 +33,13 @@ module.exports = function(robot) {
 
   var _watchers = {};
 
-  robot.hear(/^starphleet\s+(\w+|\d+)$/i, function(msg) {
-    var _command = msg.match[1];
+    robot.hear(/^status$/i, function(msg) {
+          doSendResponse(msg, " online");
+      }
+    });
+
+  robot.hear(/^(starphleet|s)\s+(\w+|\d+)$/i, function(msg) {
+    var _command = msg.match[2];
     switch (_command) {
       case "quiet":
         doHandleQuietCommand(msg);
@@ -45,9 +50,9 @@ module.exports = function(robot) {
     }
   });
 
-  robot.hear(/^starphleet\s+(\w+|\d+)\s+(\w+|\d+)$/i, function(msg) {
-    var _service = msg.match[1];
-    var _command = msg.match[2];
+  robot.hear(/^(starphleet|s)\s+(\w+|\d+)\s+(\w+|\d+)$/i, function(msg) {
+    var _service = msg.match[2];
+    var _command = msg.match[3];
     switch (_command) {
       case "status":
         doHandleStatusCommand(msg, _service);
