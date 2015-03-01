@@ -33,10 +33,10 @@ module.exports = function(robot) {
   var _watchers = {};
 
   var _friendlyRegions = {
-    "us-east-1c": "east",
-    "us-west-2c": "west",
-    "eu-west-1c": "europe",
-    "ap-northeast-1a": "asia"
+    "[us-east-1c]": "east",
+    "[us-west-2c]": "west",
+    "[eu-west-1c]": "europe",
+    "[ap-northeast-1a]": "asia"
   };
 
   robot.hear(/^status$/i, function(msg) {
