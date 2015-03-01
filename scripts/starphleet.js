@@ -37,8 +37,8 @@ module.exports = function(robot) {
     doSendResponse(msg, robot.name + " is online");
   });
 
-  robot.hear(/^starphleet\s+(\w+|\d+)$/i, function(msg) {
-    var _command = msg.match[1];
+  robot.hear(/^(starphleet|s)\s+(\w+|\d+)$/i, function(msg) {
+    var _command = msg.match[2];
     switch (_command) {
       case "quiet":
         doHandleQuietCommand(msg);
@@ -185,7 +185,7 @@ module.exports = function(robot) {
     _watchers[_name] = setInterval(function doWatchFileAndReportDiffs() {
       doGetStatusFromCurrentOrders(service, function(currentStatus) {
         if (_previousStatus !== currentStatus) {
-          var _reply = "Service [" + service + "]: " + currentStatus;
+          var _reply = "Watching [" + service + "]: " + currentStatus;
           doSendResponse(msg, _reply);
           _previousStatus = currentStatus;
         }
