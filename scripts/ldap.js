@@ -10,7 +10,7 @@ module.exports = function(robot) {
 
   robot.hear(/(^ldap)\s+(.*)/i, function(msg) {
     var _search = msg.match[2];
-    msg.send(epiLdapUrl + _search + "*");
+    msg.send(epiLdapUrl + encodeURIComponent(_search) + "*");
   });
 
 };
