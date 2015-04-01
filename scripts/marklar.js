@@ -13,4 +13,4 @@ module.exports = function(robot) {
     msg.send(consultationUrl + encodeURIComponent(_consultationId));
   });
 
-}consulta
+};
