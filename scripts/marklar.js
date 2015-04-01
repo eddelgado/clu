@@ -9,7 +9,6 @@ var consultationUrl = "services.glgresearch.com/marklar/api/call/details?consult
 module.exports = function(robot) {
 
   robot.hear(/.*consultations\/#\/consultation\/(\d+)$/, function(msg) {
-  robot.hear(/(^ldap)\s+(.*)/i, function(msg) {
     var _consultationId = msg.match[1];
     msg.send(consultationUrl + encodeURIComponent(_consultationId));
   });
