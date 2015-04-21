@@ -4,7 +4,7 @@
 // Commands:
 //   ldap <search>
 
-var consultationUrl = "services.glgresearch.com/marklar/api/call/details?consultationId=";
+var consultationUrl = "services.glgresearch.com/marklar/api/call/details?top=50&consultationId=";
 
 module.exports = function(robot) {
 
