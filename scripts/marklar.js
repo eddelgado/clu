@@ -1,8 +1,8 @@
 // Description
-//   Make an epildap link
+//   Redisplay a link to the marklar details of the same consultation
 //
 // Commands:
-//   ldap <search>
+//   <consultation link>
 
 var consultationUrl = "services.glgresearch.com/marklar/api/call/details?consultationId=";
 
