@@ -4,13 +4,13 @@
 // Commands:
 //   ldap <search>
 
-var consultationUrl = "services.glgresearch.com/marklar/api/call/details?top=50&consultationId=";
+var consultationUrl = "services.glgresearch.com/marklar/api/call/details?consultationId=";
 
 module.exports = function(robot) {
 
   robot.hear(/.*consultations\/#\/consultation\/(\d+)$/, function(msg) {
     var _consultationId = msg.match[1];
-    msg.send(encodeURI(consultationUrl + _consultationId);
+    msg.send(consultationUrl + encodeURIComponent(_consultationId) + encodeURIComponent('&top=50'));
   });
 
 };
