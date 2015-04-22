@@ -10,7 +10,7 @@ module.exports = function(robot) {
 
   robot.hear(/.*consultations\/#\/consultation\/(\d+)$/, function(msg) {
     var _consultationId = msg.match[1];
-    msg.send(consultationUrl + encodeURIComponent(_consultationId) + encodeURIComponent('&top=50'));
+    msg.send(consultationUrl + encodeURIComponent(_consultationId) + '&top=50');
   });
 
 };
