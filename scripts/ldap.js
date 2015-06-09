@@ -4,7 +4,7 @@
 // Commands:
 //   ldap <search>
 
-var epiLdapUrl = "https://jobs.glgresearch.com/epildap/searchldap?cn=";
+var epiLdapUrl = "https://services.glgresearch.com/epildap/searchldap?cn=";
 
 module.exports = function(robot) {
 
