@@ -33,7 +33,7 @@ module.exports = (robot) ->
   user = process.env.EPIQUERY_USER
   pass = process.env.EPIQUERY_PASS
 
-  robot.hear /whois ([A-za-z\.\-]+(@glgroup\.com)?)/i, (msg) ->
+  robot.hear /whois ([A-za-z\.\-0-9]+(@glgroup\.com)?)/i, (msg) ->
     email = msg.match[1]
     if email.indexOf('@') == -1
       email = "#{email}@glgroup.com"
