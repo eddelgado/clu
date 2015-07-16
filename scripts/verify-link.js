@@ -2,7 +2,7 @@
 //   Verify Contact Info
 //
 // Commands:
-//   verify contact info <personid> - Generate verify link for personid
+//   verify contact info <personid> - Generate verify link for personid of a CM
 
 var https = require('https');
 var querystring = require('querystring');
