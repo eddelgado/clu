@@ -10,7 +10,7 @@ var cercaLastRunHealthcheckUrl = '/cerca-indexer-3D9FA02/healthcheck/lastrun';
 
 module.exports = function(robot) {
 
-  robot.hear(/^(.*\.glgresearch.com)\s+cerca\s+-\s+lastrun.*Down\s+ESCALATION/, function(msg) {
+  robot.hear(/^(.*\.glgresearch\.com)\s+cerca\s+.*lastrun.*Down\s+ESCALATION/i, function(msg) {
     var _host = msg.match[2];
 
     if (!_host) {
@@ -23,6 +23,7 @@ module.exports = function(robot) {
         return;
       }
       if (response) {
+        msg.send("test");
         msg.send("/code " + JSON.stringify(response,null,2));
       }
     });
