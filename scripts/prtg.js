@@ -18,20 +18,18 @@ module.exports = function(robot) {
       return;
     }
 
-    doGetHealthcheckResponse(_host, function(err, response) {
+    doGetHealthcheckResponse(_host, cercaLastRunHealthcheckUrl, function(err, response) {
       if (err) {
         msg.send("Error Getting Token:  " + err);
         return;
       }
       if (response) {
-        msg.send("/code " + JSON.stringify(response,null,2));
+        msg.send("/code " + JSON.stringify(response, null, 2));
       }
     });
   });
 
-  var doGetHealthcheckResponse = function doGetHealthcheckResponse(host, callback) {
-
-    var url = cercaLastRunHealthcheckUrl;
+  var doGetHealthcheckResponse = function doGetHealthcheckResponse(host, url, callback) {
 
     var options = {
       hostname: host,
