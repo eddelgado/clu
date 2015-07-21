@@ -10,11 +10,7 @@ var cercaLastRunHealthcheckUrl = '/cerca-indexer-3D9FA02/healthcheck/lastrun';
 
 module.exports = function(robot) {
 
-  robot.hear(/^test\s*(.*)$/, function(msg) {
-    msg.send('asdfasdf ' + msg.match[1]);
-  });
-
-  robot.hear(/^(.*\.glgresearch\.com)\s+cerca\s+.*lastrun.*Down\s+ESCALATION/i, function(msg) {
+  robot.hear(/^(.*\.glgresearch\.com)\s+cerca.*lastrun.*Down\s+ESCALATION/i, function(msg) {
     console.log('got here');
     var _host = msg.match[1];
 
@@ -28,7 +24,6 @@ module.exports = function(robot) {
         return;
       }
       if (response) {
-        msg.send("test");
         msg.send("/code " + JSON.stringify(response,null,2));
       }
     });
