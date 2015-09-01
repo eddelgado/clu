@@ -168,6 +168,7 @@ var unlockUser = function(msg, unlockUsername) {
 module.exports = function(robot) {
   robot.hear(/^unlock\s+(.*)\s*/i, function(msg) {
     var _username = msg.match[1];
+    log.warn("Unlock Request For [", _username, "] From:", msg.message.user);
     unlockUser(msg, _username);
   });
 };
