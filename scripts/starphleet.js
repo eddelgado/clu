@@ -42,7 +42,7 @@ module.exports = function(robot) {
   };
 
   // Support the die command
-  robot.respond(/^DIE$/i, function(msg) {
+  robot.respond(/DIE$/i, function(msg) {
     process.exit(0);
   });
 
