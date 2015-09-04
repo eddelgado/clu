@@ -66,12 +66,22 @@ module.exports = function(robot) {
 
     var _command = msg.match[1];
 
+    // Try to build a response that specifies our region
+    var _response = "/code ";
+    if (_friendlyRegions[process.env.LABEL]) {
+      _response += _friendlyRegions[process.env.LABEL] + ": ";
+    } else {
+      _response += process.env.LABEL ? process.env.LABEL + ": " : "";
+    }
+
+
     exec(_command, function(err, stdout, stderr) {
       if (err) {
         throw err;
       }
 
-      msg.send("/code \n" + stdout);
+      _response += "\n" + stdout;
+      msg.send(_response);
     });
   });
 
