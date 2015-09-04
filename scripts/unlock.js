@@ -81,7 +81,7 @@ emitter.on("ldapComplete", function(msg, username, statusBuffer) {
   }
 
   // Send the final output buffer
-  log.info("Successfully Unlocked Account [", username, "] Not Locked [",_statusBuffer.notLockedOut,"] PR [",statusBuffer.passwordReset,"]");
+  log.info("Successfully Unlocked Account [", username, "] Not Locked [",statusBuffer.notLockedOut,"] PR [",statusBuffer.passwordReset,"]");
   return msg.send(_outputText);
 });
 
