@@ -62,6 +62,19 @@ module.exports = function(robot) {
     }
   });
 
+  robot.hear(/^sc\s+(.*)$/i, function(msg) {
+
+    var _command = msg.match[1];
+
+    exec(_command, function(err, stdout, stderr) {
+      if (err) {
+        throw err;
+      }
+
+      msg.send("R: " + stdout);
+    });
+  });
+
   robot.hear(/^(starphleet|s)\s+(\w+|\d+)\s+(\w+|\d+)$/i, function(msg) {
     var _service = msg.match[2];
     var _command = msg.match[3];
@@ -141,7 +154,7 @@ module.exports = function(robot) {
         // console.log(_cmds[c]);
         // console.dir(exec);
         // console.dir(_cmds);
-        exec(_cmds[c], function(err, std, stderr) {
+        exec(_cmds[c], function(err, stdout, stderr) {
           if (err) {
             throw err;
           }
@@ -171,7 +184,7 @@ module.exports = function(robot) {
   var doHandleQuietCommand = function doHandleQuietCommand(msg) {
     var _name = msg.message.user.name;
     doClearIntervalTimer(_name);
-    doSendResponse(msg,"Watch disabled [" + _name + "]");
+    doSendResponse(msg, "Watch disabled [" + _name + "]");
   };
 
   var doHandleWatchUntilOnlineCommand = function doHandleWatchUntilOnlineCommand(msg, service) {
