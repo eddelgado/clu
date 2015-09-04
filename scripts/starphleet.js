@@ -66,16 +66,18 @@ module.exports = function(robot) {
 
     var _service = msg.match[1];
 
-    if (_service === "") {
-      return msg.send("Must provide a service name");
-    }
-
     // Try to build a response that specifies our region
     var _response = "/code ";
     if (_friendlyRegions[process.env.LABEL]) {
       _response += _friendlyRegions[process.env.LABEL] + ": ";
     } else {
       _response += process.env.LABEL ? process.env.LABEL + ": " : "";
+    }
+
+
+    if (_service === "") {
+      _response += "Must provide a service name";
+      return msg.send(_response);
     }
 
     var _command = ['starphleet-status', _service].join(' ');
