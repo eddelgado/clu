@@ -62,9 +62,13 @@ module.exports = function(robot) {
     }
   });
 
-  robot.hear(/^sc\s+(.*)$/i, function(msg) {
+  robot.hear(/^sst\s+(.*)$/i, function(msg) {
 
-    var _command = msg.match[1];
+    var _service = msg.match[1];
+
+    if (_service === "") {
+      return msg.send("Must provide a service name");
+    }
 
     // Try to build a response that specifies our region
     var _response = "/code ";
@@ -74,6 +78,7 @@ module.exports = function(robot) {
       _response += process.env.LABEL ? process.env.LABEL + ": " : "";
     }
 
+    var _command = ['starphleet-status', _service].join(' ');
 
     exec(_command, function(err, stdout, stderr) {
       if (err) {
