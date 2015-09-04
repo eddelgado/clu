@@ -115,8 +115,13 @@ EOF
     # If trouble is set and everything is healthy we skip this one (eg, continue)
     if [ "${trouble}" == "true" ] &&
        ([ -f "${container_file}" ] &&
-        [ -z "${CHECK_UNPUBLISHED}" ] &&
         [ "${LATEST_SUCCESSFUL_CONTAINER}" == "${NGINX_POINTING_AT}" ]); then
+      continue
+    fi
+
+    # Skip unpublished in trouble mode
+    if [ "${trouble}" == "true" ] &&
+       [ -n "${CHECK_UNPUBLISHED}" ]; then
       continue
     fi
 
