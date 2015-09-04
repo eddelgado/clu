@@ -109,9 +109,13 @@ EOF
     # is not always the same is what starphleet thinks is the latest container
     NGINX_POINTING_AT=$(curl --connect-timeout 1 -m 1 -s -XHEAD -i "http://localship/${ORDER}/" | grep "X-Starphleet-Container" | cut -f 2 -d " " | tr -dc '[[:print:]]')
 
+    unset CHECK_UNPUBLISHED
+    [ -f "${HEADQUARTERS_LOCAL}/${ORDER}/orders" ] && CHECK_UNPUBLISHED=$(cat "${HEADQUARTERS_LOCAL}/${ORDER}/orders" | grep unpublished)
+
     # If trouble is set and everything is healthy we skip this one (eg, continue)
     if [ "${trouble}" == "true" ] &&
        ([ -f "${container_file}" ] &&
+        [ -z "${CHECK_UNPUBLISHED}" ] &&
         [ "${LATEST_SUCCESSFUL_CONTAINER}" == "${NGINX_POINTING_AT}" ]); then
       continue
     fi
@@ -128,6 +132,7 @@ EOF
       ORDER_LOCAL="${HEADQUARTERS_LOCAL}/${ORDER}/git"
     fi
 
+
     # Snag GIT infoz
     if [ -d "${ORDER_LOCAL}" ]; then
       get_CURRENT_SHA "${ORDER_LOCAL}"
@@ -140,21 +145,28 @@ EOF
       GIT_TEXT=""
     fi
 
-    # Emit some info about this order
-    info "    order             : ${ORDER}"
-    info "    latest status     : ${LATEST_SUCCESSFUL_STATUS}"
-    info "    latest active     : ${LATEST_SUCCESSFUL_CONTAINER}"
-    if [ "${LATEST_SUCCESSFUL_CONTAINER}" != "${NGINX_POINTING_AT}" ]; then
-    error "    nginx aimed at    : ${NGINX_POINTING_AT}"
+    if [ -n "${CHECK_UNPUBLISHED}" ]; then
+      # Emit some info about this order
+      info "    order             : ${ORDER}"
+      info "    latest status     : unpublished"
+      info "    ------------"
     else
-    info "    nginx aimed at    : ${NGINX_POINTING_AT}"
+      # Emit some info about this order
+      info "    order             : ${ORDER}"
+      info "    latest status     : ${LATEST_SUCCESSFUL_STATUS}"
+      info "    latest active     : ${LATEST_SUCCESSFUL_CONTAINER}"
+      if [ "${LATEST_SUCCESSFUL_CONTAINER}" != "${NGINX_POINTING_AT}" ]; then
+      error "    nginx aimed at    : ${NGINX_POINTING_AT}"
+      else
+      info "    nginx aimed at    : ${NGINX_POINTING_AT}"
+      fi
+      info "    git author        : ${AUTHOR}"
+      info "    git sha           : ${CURRENT_SHA}"
+      info "    latest git msg    : ${GIT_TEXT}"
+      info "    "
+      info "    Container Details : "
+      info "    ------------"
     fi
-    info "    git author        : ${AUTHOR}"
-    info "    git sha           : ${CURRENT_SHA}"
-    info "    latest git msg    : ${GIT_TEXT}"
-    info "    "
-    info "    Container Details : "
-    info "    ------------"
 
     # Now run through all the status files for this order and spit up
     # some info about each container
