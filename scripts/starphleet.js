@@ -71,7 +71,7 @@ module.exports = function(robot) {
         throw err;
       }
 
-      msg.send("R: " + stdout);
+      msg.send("/code \n" + stdout);
     });
   });
 
