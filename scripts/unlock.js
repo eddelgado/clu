@@ -144,9 +144,6 @@ var unlockUser = function(msg, unlockUsername) {
       return msg.send(_msg);
     }
 
-    // Emit the event that we are done
-    emitter.emit("ldapComplete", msg, unlockUsername, _statusBuffer);
-
     // Foreach Domain Controller
     var c = domainControllers.length;
     while (c--) {
