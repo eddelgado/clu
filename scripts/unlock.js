@@ -70,12 +70,18 @@ emitter.on("ldapComplete", function(msg, username, statusBuffer) {
     _outputText += "Account Unlock Successful - [" + username + "].  ";
   }
 
+  // Check if they were even locked out
+  if (statusBuffer.notLockedOut === true) {
+    _outputText += "The account was not detected as locked out.";
+  }
+
   // Check if their password has expired - if yes, let them know
   if (statusBuffer.passwordReset === true) {
     _outputText += "The password has expired and must be reset to login.";
   }
+
   // Send the final output buffer
-  log.info("Successfully Unlocked Account [", username, "]");
+  log.info("Successfully Unlocked Account [", username, "] Not Locked [",_statusBuffer.notLockedOut,"] PR [",statusBuffer.passwordReset,"]");
   return msg.send(_outputText);
 });
 
@@ -134,14 +140,11 @@ var unlockUser = function(msg, unlockUsername) {
     }
     // Flag that our search finished
     _statusBuffer.ldapSearchComplete = true;
-    log.verbose("R:",result);
-      // Don't proceed if the user isn't locked out
+    _statusBuffer.notLockedOut = false;
+    log.verbose("R:", result);
+    // Don't proceed if the user isn't locked out
     if (result[0].lockoutTime === "0") {
-      var _msg = ["User [", unlockUsername, "] Not Locked Out"].join('');
-      if (_statusBuffer.passwordReset) {
-        _msg += "  Their password has expired.";
-      }
-      return msg.send(_msg);
+      _statusBuffer.notLockedOut = true;
     }
 
     // Foreach Domain Controller
