@@ -88,38 +88,6 @@ var unlockUser = function(msg, unlockUsername) {
   // Set a flag as false until search is complete
   _statusBuffer.ldapSearchComplete = false;
 
-  // Foreach Domain Controller
-  var c = domainControllers.length;
-  while (c--) {
-    // Yoink the ip for read'ability
-    var _ip = domainControllers[c];
-    // These async calls need to all complete
-    // before we send our final respone so we
-    // keep track of how many are still running
-    // and when they are all done .. the event
-    // listener will finally trigger the response
-    // to the user
-    _statusBuffer.ldapUnlockCounter++;
-    // Go unlock the users account
-    ldap.unlockUserAccount(_ip, unlockUsername, function(err, address, username) {
-      // If there was an error with this region
-      if (err) {
-        // Log to console
-        log.warn("Error Unlocking Account [", username, "] on [", address, "]:", err);
-        // Initialize the error object
-        if (!_statusBuffer.err) {
-          _statusBuffer.err = {};
-        }
-        // Set the error for this region
-        _statusBuffer.err[_ip] = err;
-      }
-      // Finally we are done so forget about this reset
-      _statusBuffer.ldapUnlockCounter--;
-      // ... and Emit the event that we've completed
-      emitter.emit("ldapComplete", msg, username, _statusBuffer);
-    });
-  }
-
   /**
    * @abstract The following checks whether the users password is also expired.
    *           If the users password is expired we will notify them they need
@@ -133,9 +101,15 @@ var unlockUser = function(msg, unlockUsername) {
     _filter = '(&(sAMAccountName=' + unlockUsername + '))';
   }
   // Return all attributes for the user
-  var _attr = [];
+  var _attr = [
+    'pwdLastSet',
+    'lockoutTime'
+  ];
   // Perform an ldap Search
   ldap.ldapSearch(_filter, _attr, function(result) {
+    if (!result[0]) {
+      return msg.send(["User [", unlockUsername, "] Not Found"].join(''));
+    }
     // Convert Windows Epoch to Linux Epoch
     // 1.1.1600 -> 1.1.1970 difference in seconds = 11644473600
     log.verbose("  unlockUsername pwdLastSet:", result[0].pwdLastSet);
@@ -160,8 +134,50 @@ var unlockUser = function(msg, unlockUsername) {
     }
     // Flag that our search finished
     _statusBuffer.ldapSearchComplete = true;
+    log.verbose("R:",result);
+      // Don't proceed if the user isn't locked out
+    if (result[0].lockoutTime === "0") {
+      var _msg = ["User [", unlockUsername, "] Not Locked Out"].join('');
+      if (_statusBuffer.passwordReset) {
+        _msg += "  Their password has expired.";
+      }
+      return msg.send(_msg);
+    }
+
     // Emit the event that we are done
     emitter.emit("ldapComplete", msg, unlockUsername, _statusBuffer);
+
+    // Foreach Domain Controller
+    var c = domainControllers.length;
+    while (c--) {
+      // Yoink the ip for read'ability
+      var _ip = domainControllers[c];
+      // These async calls need to all complete
+      // before we send our final respone so we
+      // keep track of how many are still running
+      // and when they are all done .. the event
+      // listener will finally trigger the response
+      // to the user
+      _statusBuffer.ldapUnlockCounter++;
+      // Go unlock the users account
+      ldap.unlockUserAccount(_ip, unlockUsername, function(err, address, username) {
+        // If there was an error with this region
+        if (err) {
+          // Log to console
+          log.warn("Error Unlocking Account [", username, "] on [", address, "]:", err);
+          // Initialize the error object
+          if (!_statusBuffer.err) {
+            _statusBuffer.err = {};
+          }
+          // Set the error for this region
+          _statusBuffer.err[_ip] = err;
+        }
+        // Finally we are done so forget about this reset
+        _statusBuffer.ldapUnlockCounter--;
+        // ... and Emit the event that we've completed
+        emitter.emit("ldapComplete", msg, username, _statusBuffer);
+      });
+    }
   });
 };
 
@@ -172,3 +188,25 @@ module.exports = function(robot) {
     unlockUser(msg, _username);
   });
 };
+
+// ***********************************************************************
+// Tests
+// ***********************************************************************
+
+if (module.parent === null) {
+  // Enable Logging
+  log.enable.logging = process.env.ENABLE_LOGGING ? true : false;
+  log.enable.debug = process.env.ENABLE_DEBUG ? true : false;
+  log.enable.verbose = process.env.ENABLE_VERBOSE ? true : false;
+  log.enable.tests = true;
+
+  var _msg = {
+    send: function(msg) {
+      log.warn("Results:", msg);
+    }
+  };
+
+  var _user = "shmoejo";
+
+  unlockUser(_msg, _user);
+}
