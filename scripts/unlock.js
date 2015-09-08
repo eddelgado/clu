@@ -187,6 +187,13 @@ module.exports = function(robot) {
     log.warn("Unlock Request For [", _username, "] From:", msg.message.user);
     unlockUser(msg, _username);
   });
+
+  robot.respond(/unlock\s+(.*)\s*/i, function(msg) {
+    var _username = msg.match[1];
+    log.warn("Unlock Request For [", _username, "] From:", msg.message.user);
+    unlockUser(msg, _username);
+  });
+
 };
 
 // ***********************************************************************
