@@ -50,6 +50,7 @@ module.exports = (robot) ->
           return
         body = response[0]
         firstname = body.rmFirstName
+        pid = body.personId
         lastname = body.rmLastName
         id = body.userId
         phoneExtension = body.rmExtension
@@ -57,7 +58,7 @@ module.exports = (robot) ->
         state = body.rmState
         reply = []
         url = "https://query.glgroup.com/person/getUserByEmail.mustache?Email=#{email}"
-        reply.push "You're looking for #{firstname} #{lastname} (User ID: #{id})"
+        reply.push "You're looking for #{firstname} #{lastname} (User ID: #{id} - Person ID: #{pid})"
         if city and state
           reply.push " of #{city}, #{state}"
         if phoneExtension
