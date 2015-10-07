@@ -24,7 +24,8 @@ module.exports = (robot) ->
         resolve(rooms)
 
   robot.respond /steal admin/i, (msg) ->
-    roomName = msg.envelope.room
+    # Use the JID for more accurate matching
+    roomName = msg.envelope.user.reply_to
     if not roomName
       msg.send 'Get a room first. :)'
       return
@@ -33,9 +34,7 @@ module.exports = (robot) ->
     roomList.then (rooms) ->
       roomName = roomName
       room = rooms.filter (room) ->
-        console.log(room.name.toLowerCase().replace(/(\W|_)*/g," "))
-        console.log(roomName.toLowerCase().replace(/(\W|_)*/g," "))
-        room.name.toLowerCase().replace(/(\W|_)*/g," ") == roomName.toLowerCase().replace(/(\W|_)*/g," ")
+        room.xmpp_jid == roomName
       if not room.length
         msg.send '''Couldn't find the room in the room list!'''
         return
