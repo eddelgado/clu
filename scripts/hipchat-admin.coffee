@@ -33,6 +33,7 @@ module.exports = (robot) ->
     # API is case-sensitive.
     roomList.then (rooms) ->
       roomName = roomName
+      robot.logger.warning rooms
       room = rooms.filter (room) ->
         room.xmpp_jid == roomName
       if not room.length
