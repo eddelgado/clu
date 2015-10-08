@@ -7,6 +7,7 @@
 
 Promise = require('bluebird')
 roomCache = {}
+roomIdCache = {}
 
 HIPCHAT_AUTH_TOKEN = process.env.HIPCHAT_AUTH_TOKEN
 if not HIPCHAT_AUTH_TOKEN
@@ -26,8 +27,8 @@ doGetRoomDetails = (roomId, robot, callback) ->
     .get() (err, resp, body) ->
       console.log "doGetRoomDetails http", err, resp, body
       return reject(err) if err
-      response = JSON.parse body
-      roomDetails = response.items
+      roomDetails = JSON.parse body
+      roomIdCache[roomDetails.id] = true
       callback(roomDetails)
 
 doHipchatRoomUnlock = (details, robot, msg) ->
@@ -81,7 +82,8 @@ module.exports = (robot) ->
       while c--
         room = rooms[c]
         robot = robot
-        doGetRoomDetails room.id, robot, (details) ->
-          roomCache[details.xmpp_jid] = details
-          if details.xmpp_jid == roomJmidFromJabber
-            doHipchatRoomUnlock details, robot, msg
+        if not roomIdCache[room.id]
+          doGetRoomDetails room.id, robot, (details) ->
+            roomCache[details.xmpp_jid] = details
+            if details.xmpp_jid == roomJmidFromJabber
+              doHipchatRoomUnlock details, robot, msg
