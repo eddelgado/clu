@@ -58,6 +58,7 @@ module.exports = (robot) ->
       .query('auth_token', AUTH_TOKEN)
       .query('max-results', 1000)
       .get() (err, resp, body) ->
+        console.log "RoomList", err, resp, body
         return reject(err) if err
         response = JSON.parse body
         rooms = response.items
