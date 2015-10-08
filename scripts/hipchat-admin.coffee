@@ -8,6 +8,11 @@
 Promise = require('bluebird')
 roomCache = {}
 
+HIPCHAT_AUTH_TOKEN = process.env.HIPCHAT_AUTH_TOKEN
+if not HIPCHAT_AUTH_TOKEN
+  robot.logger.warning 'The HIPCHAT_AUTH_TOKEN environment variable is not set'
+  return
+
 # I am the last person to touch this - but, I don't get along with coffee
 # and I'm using this pointless project to understand coffee better'er.  With
 # that said, ..if you are reading this in horror.. I don't know what I'm doing
@@ -16,7 +21,7 @@ roomCache = {}
 doGetRoomDetails = (roomId, robot, callback) ->
   console.log "Got to doGetRoomDetails #{roomId}"
   robot.http("https://api.hipchat.com/v2/room/#{roomId}")
-    .query('auth_token', AUTH_TOKEN)
+    .query('auth_token', HIPCHAT_AUTH_TOKEN)
     .query('max-results', 1000)
     .get() (err, resp, body) ->
       console.log "doGetRoomDetails http", err, resp, body
@@ -39,7 +44,7 @@ doHipchatRoomUnlock = (details, robot, msg) ->
   # Send it back!
   robot.http('https://api.hipchat.com')
     .path("v2/room/#{id}")
-    .query('auth_token', AUTH_TOKEN)
+    .query('auth_token', HIPCHAT_AUTH_TOKEN)
     .put(JSON.stringify(room)) (err, resp, body) ->
       robot.logger.info body
       if err
@@ -48,14 +53,11 @@ doHipchatRoomUnlock = (details, robot, msg) ->
       msg.send "#{msg.message.user.name} is now room owner"
 
 module.exports = (robot) ->
-  AUTH_TOKEN = process.env.HIPCHAT_AUTH_TOKEN
-  if not AUTH_TOKEN
-    robot.logger.warning 'The HIPCHAT_AUTH_TOKEN environment variable is not set'
-    return
+
 
   roomList = new Promise (resolve, reject) ->
     robot.http('https://api.hipchat.com/v2/room')
-      .query('auth_token', AUTH_TOKEN)
+      .query('auth_token', HIPCHAT_AUTH_TOKEN)
       .query('max-results', 1000)
       .get() (err, resp, body) ->
         console.log "RoomList", err, resp, body
