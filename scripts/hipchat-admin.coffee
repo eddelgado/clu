@@ -82,6 +82,7 @@ module.exports = (robot) ->
 
   robot.respond /steal admin/i, (msg) ->
     # Use the JID for more accurate matching
+    return msg.send "This doesn't work.  See: [http://bit.ly/1G04wqe]"
     roomJmidFromJabber = msg.envelope.user.reply_to
     if not roomJmidFromJabber
       return msg.send 'Get a room first. :)'
