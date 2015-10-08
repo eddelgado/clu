@@ -13,7 +13,7 @@ roomCache = {}
 # that said, ..if you are reading this in horror.. I don't know what I'm doing
 # Signed, Benjamin Hudgens
 
-doGetRoomDetails = (roomId, callback) ->
+doGetRoomDetails = (roomId, robot, callback) ->
   console.log "Got to doGetRoomDetails #{roomId}"
   robot.http("https://api.hipchat.com/v2/room/#{roomId}")
     .query('auth_token', AUTH_TOKEN)
@@ -78,7 +78,8 @@ module.exports = (robot) ->
       c = rooms.length
       while c--
         room = rooms[c]
-        doGetRoomDetails room.id, (details) ->
+        doGetRoomDetails room.id, robot, (details) ->
           roomCache[details.xmpp_jid] = details
           if details.xmpp_jid == roomJmidFromJabber
+            robot = robot
             doHipchatRoomUnlock details, robot, msg
