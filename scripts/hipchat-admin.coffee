@@ -20,6 +20,7 @@ doGetRoomDetails = (roomId) ->
       .query('auth_token', AUTH_TOKEN)
       .query('max-results', 1000)
       .get() (err, resp, body) ->
+        console.log "doGetRoomDetails http", err, resp, body
         return reject(err) if err
         response = JSON.parse body
         roomDetails = response.items
