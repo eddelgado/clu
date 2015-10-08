@@ -13,18 +13,17 @@ roomCache = {}
 # that said, ..if you are reading this in horror.. I don't know what I'm doing
 # Signed, Benjamin Hudgens
 
-doGetRoomDetails = (roomId) ->
+doGetRoomDetails = (roomId, callback) ->
   console.log "Got to doGetRoomDetails #{roomId}"
-  new Promise (resolve, reject) ->
-    robot.http("https://api.hipchat.com/v2/room/#{roomId}")
-      .query('auth_token', AUTH_TOKEN)
-      .query('max-results', 1000)
-      .get() (err, resp, body) ->
-        console.log "doGetRoomDetails http", err, resp, body
-        return reject(err) if err
-        response = JSON.parse body
-        roomDetails = response.items
-        resolve(roomDetails)
+  robot.http("https://api.hipchat.com/v2/room/#{roomId}")
+    .query('auth_token', AUTH_TOKEN)
+    .query('max-results', 1000)
+    .get() (err, resp, body) ->
+      console.log "doGetRoomDetails http", err, resp, body
+      return reject(err) if err
+      response = JSON.parse body
+      roomDetails = response.items
+      callback(roomDetails)
 
 doHipchatRoomUnlock = (details, robot, msg) ->
   delete details.created
