@@ -14,6 +14,7 @@ roomCache = {}
 # Signed, Benjamin Hudgens
 
 doGetRoomDetails = (roomId) ->
+  console.log "Got to doGetRoomDetails #{roomId}"
   new Promise (resolve, reject) ->
     robot.http("https://api.hipchat.com/v2/room/#{roomId}")
       .query('auth_token', AUTH_TOKEN)
