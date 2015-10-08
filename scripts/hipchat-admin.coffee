@@ -85,3 +85,5 @@ module.exports = (robot) ->
             if details.xmpp_jid == roomJmidFromJabber
               doHipchatRoomUnlock details, robot, msg
               resolve()
+          .catch (e) ->
+            console.log "Error: #{e}"
