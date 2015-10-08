@@ -19,6 +19,19 @@ if not HIPCHAT_AUTH_TOKEN
 # that said, ..if you are reading this in horror.. I don't know what I'm doing
 # Signed, Benjamin Hudgens
 
+# In case anyone else comes along, The main complication with this functionality
+# is that clu connects through jabber.  When we get a message via jabber we get
+# a very limited bit of information about the room.  Currently, the v2 api on
+# hipchats REST api does not return the list of rooms with ANY of the meta data
+# that corresponds with the information in the jabber informatmion.  Thus, we
+# have to query each room individually.  We have so many rooms that we quickly
+# reach the threshhold of the hipchat API when trying to get the information
+# (jabberID of the room) that we would need to match which room the Request
+# came in.
+#
+# I'm punting on this for now but the easy solution is.. make the user specify
+# the room (case sensitive) and use the room name to hit the API.
+
 doGetRoomDetails = (roomId, robot, callback) ->
   console.log "Got to doGetRoomDetails #{roomId}"
   robot.http("https://api.hipchat.com/v2/room/#{roomId}")
