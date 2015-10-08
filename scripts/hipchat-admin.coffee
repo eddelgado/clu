@@ -25,39 +25,26 @@ doGetRoomDetails = (roomId) ->
         resolve(roomDetails)
 
 doHipchatRoomUnlock = (details, robot, msg) ->
-  # Grab the info about that room from Hipchat.
+  delete details.created
+  delete details.guest_access_url
+  delete details.last_active
+  delete details.id
+  delete details.links
+  delete details.participants
+  delete details.statistics
+  delete details.xmpp_jid
+  room.owner =
+    id: msg.envelope?.user?.id
+  # Send it back!
   robot.http('https://api.hipchat.com')
-    .path("v2/room/#{roomId}")
+    .path("v2/room/#{id}")
     .query('auth_token', AUTH_TOKEN)
-    .get() (err, resp, body) ->
+    .put(JSON.stringify(room)) (err, resp, body) ->
+      robot.logger.info body
       if err
         robot.logger.error err
         return
-      robot.logger.info body
-      room = JSON.parse body
-      # Re-use the response after cleaning it up a bit
-      delete room.created
-      delete room.guest_access_url
-      delete room.last_active
-      delete room.id
-      delete room.links
-      delete room.participants
-      delete room.statistics
-      delete room.xmpp_jid
-      # Update to make current user the admin.
-      console.dir(room)
-      room.owner =
-        id: msg.envelope?.user?.id
-      # Send it back!
-      robot.http('https://api.hipchat.com')
-        .path("v2/room/#{id}")
-        .query('auth_token', AUTH_TOKEN)
-        .put(JSON.stringify(room)) (err, resp, body) ->
-          robot.logger.info body
-          if err
-            robot.logger.error err
-            return
-          msg.send "#{msg.message.user.name} is now room owner"
+      msg.send "#{msg.message.user.name} is now room owner"
 
 module.exports = (robot) ->
   AUTH_TOKEN = process.env.HIPCHAT_AUTH_TOKEN
