@@ -78,8 +78,8 @@ module.exports = (robot) ->
       c = rooms.length
       while c--
         room = rooms[c]
+        robot = robot
         doGetRoomDetails room.id, robot, (details) ->
           roomCache[details.xmpp_jid] = details
           if details.xmpp_jid == roomJmidFromJabber
-            robot = robot
             doHipchatRoomUnlock details, robot, msg
