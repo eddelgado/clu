@@ -24,7 +24,7 @@ doGetRoomDetails = (roomId) ->
         roomDetails = response.items
         resolve(roomDetails)
 
-doHipchatRoomUnlock = (roomId, robot, msg) ->
+doHipchatRoomUnlock = (details, robot, msg) ->
   # Grab the info about that room from Hipchat.
   robot.http('https://api.hipchat.com')
     .path("v2/room/#{roomId}")
@@ -79,21 +79,19 @@ module.exports = (robot) ->
     # Use the JID for more accurate matching
     roomJmidFromJabber = msg.envelope.user.reply_to
     if not roomJmidFromJabber
-      msg.send 'Get a room first. :)'
-      return
+      return msg.send 'Get a room first. :)'
     # Find the ID of the room from the lowercase name because Hipchat's stupid
     # API is case-sensitive.
+    if roomCache[roomJmidFromJabber]
+      return doHipchatRoomUnlock roomCache[roomJmidFromJabber], robot, msg
+
     roomList.then (rooms) ->
-      roomJmidFromJabber = roomJmidFromJabber
       c = rooms.length
       while c--
         room = rooms[c]
-        if not roomCache[room.id]
-          doGetRoomDetails room.id
-            .then (details) ->
-              roomCache[room.id] = room.xmpp_jid
-              if roomCache[room.id] == roomJmidFromJabber
-                doHipchatRoomUnlock room.id,robot,msg
-        else
-          if roomCache[room.id] == roomJmidFromJabber
-            doHipchatRoomUnlock room.id,robot,msg
+        doGetRoomDetails room.id
+          .then (details) ->
+            roomCache[details.xmpp_jid] = details
+            if details.xmpp_jid == roomJmidFromJabber
+              doHipchatRoomUnlock details, robot, msg
+              resolve()
