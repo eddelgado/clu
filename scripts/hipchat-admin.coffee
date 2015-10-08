@@ -79,11 +79,7 @@ module.exports = (robot) ->
       c = rooms.length
       while c--
         room = rooms[c]
-        doGetRoomDetails room.id
-          .then (details) ->
-            roomCache[details.xmpp_jid] = details
-            if details.xmpp_jid == roomJmidFromJabber
-              doHipchatRoomUnlock details, robot, msg
-              resolve()
-          .catch (e) ->
-            console.log "Error: #{e}"
+        doGetRoomDetails room.id, (details) ->
+          roomCache[details.xmpp_jid] = details
+          if details.xmpp_jid == roomJmidFromJabber
+            doHipchatRoomUnlock details, robot, msg
