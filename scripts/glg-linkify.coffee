@@ -46,7 +46,7 @@ module.exports = (robot) ->
   user = process.env.EPIQUERY_USER
   pass = process.env.EPIQUERY_PASS
 
-  robot.hear /\b((?:cm)|(?:project)|(?:client)|(?:person))[#|:|\s](\d+)\b/i, (msg) ->
+  robot.hear /^\b((?:cm)|(?:project)|(?:client)|(?:person))[#|:|\s](\d+)\b/i, (msg) ->
     type = msg.match[1]
     id = msg.match[2]
     return if not type
