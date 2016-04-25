@@ -57,7 +57,7 @@ module.exports = (robot) ->
         city = body.rmCity
         state = body.rmState
         reply = []
-        url = "https://query.glgroup.com/person/getUserByEmail.mustache?Email=#{email}"
+        url = "https://services.glgresearch.com/epiquery/person/getUserByEmail.mustache?Email=#{email}"
         reply.push "You're looking for #{firstname} #{lastname} (User ID: #{id} - Person ID: #{pid})"
         if city and state
           reply.push " of #{city}, #{state}"
@@ -84,7 +84,7 @@ module.exports = (robot) ->
         personId = body.PERSON_ID
         phoneExtension = body.EXTENSION
         reply = []
-        url = "https://query.glgroup.com/person/getPersonByUserId.mustache?userId=#{id}"
+        url = "https://services.glgresearch.com/epiquery/person/getPersonByUserId.mustache?userId=#{id}"
         reply.push "You're looking for #{firstname} #{lastname} (Person ID: #{personId})"
         if phoneExtension
           reply.push ". Their extension is #{phoneExtension}"
