@@ -3,9 +3,11 @@
 #
 # Commands:
 #   (compliance)
+#   (worksforme)
 #
 # Examples:
 #   (compliance)
+#   (worksforme)
 
 module.exports = (robot) ->
 
