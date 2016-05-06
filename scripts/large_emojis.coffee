@@ -16,3 +16,6 @@ module.exports = (robot) ->
 
   robot.hear /\(worksforme\)/i, (msg) ->
     msg.send 'https://s3.amazonaws.com/uploads.hipchat.com/34193/575391/uTasNrS4pQZXwTD/upload.png'
+
+  robot.hear /\(worksonmymachine\)/i, (msg) ->
+    msg.send 'https://s3.amazonaws.com/uploads.hipchat.com/34193/575391/uTasNrS4pQZXwTD/upload.png'
