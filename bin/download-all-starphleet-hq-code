@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+####
+## Based on Idea from Ian - Get all code from an HQ repo
+####
+HQ_DIR=${1?You must provide a starphleet HQ directory for which you want the service code checked out}
+DEST_DIR=${2?You must provide a destination to where the HQ repos will be checked out}
+
+TMP_FILE=${TMP_FILE:-"/tmp/asdfhjk$$.tmp"}
+echo "" > ${TMP_FILE}
+
+pushd ${HQ_DIR}
+for repo_url in $(ag --nocolor --no-numbers ^autodeploy | grep -v '/remote' | sed -e 's/:autodeploy /:/g')
+do
+  SERVICE=$(dirname $(echo ${repo_url} | cut -f 1 -d ':'))
+  GIT_REPO=$(echo "${repo_url}" | perl -pe 's|^.*?:||')
+  echo "starphleet-git-synch ${GIT_REPO} ${DEST_DIR}/$(basename ${HQ_DIR})/${SERVICE}" >> "${TMP_FILE}"
+done
+
+# cat "${TMP_FILE}"
+parallel --ungroup :::: "${TMP_FILE}"
+
